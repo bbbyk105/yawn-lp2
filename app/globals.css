@@ -1,26 +1,220 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Custom Colors */
+  --color-hinoki-gold: #c4a962;
+  --color-hinoki-light: #e8dcc8;
+  --color-hinoki-brown: #8b7355;
+  --color-neon-green: #7fff00;
+  --color-forest-deep: #1a3a2e;
+
+  /* Font Families */
+  --font-family-ja-sans: var(--font-noto-sans-jp);
+  --font-family-ja-serif: var(--font-noto-serif-jp);
+  --font-family-en-sans: var(--font-inter);
+  --font-family-en-display: var(--font-playfair);
+  --font-family-en-accent: var(--font-space-grotesk);
+
+  /* Font Sizes */
+  --font-size-hero: clamp(3rem, 8vw, 7rem);
+  --font-size-h1: clamp(2rem, 5vw, 4rem);
+  --font-size-h2: clamp(1.5rem, 4vw, 3rem);
+  --font-size-h3: clamp(1.25rem, 3vw, 2rem);
+  --font-size-body: clamp(1rem, 2vw, 1.125rem);
+
+  /* Spacing */
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --spacing-26: 6.5rem;
+  --spacing-30: 7.5rem;
+
+  /* Animations */
+  --animate-duration-slow: 2s;
+  --animate-duration-normal: 1s;
+  --animate-duration-fast: 0.3s;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  * {
+    @apply outline-none;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    @apply bg-black text-white font-family-ja-sans antialiased;
+    font-feature-settings: "palt" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-family-ja-serif;
+    letter-spacing: 0.05em;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .font-ja-display {
+    font-family: var(--font-family-ja-serif);
+  }
+
+  .font-en-display {
+    font-family: var(--font-family-en-display);
+  }
+
+  .font-en-accent {
+    font-family: var(--font-family-en-accent);
+  }
+
+  /* Gradient text */
+  .gradient-gold {
+    background: linear-gradient(to right, var(--color-hinoki-gold), #fbbf24);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  /* Glass effect */
+  .glass {
+    background: rgb(255 255 255 / 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgb(255 255 255 / 0.2);
+  }
+
+  /* Hinoki texture overlay */
+  .hinoki-texture {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238B7355' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-zinc-900;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-zinc-700 rounded-full;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-zinc-600;
+  }
+}
+
+/* GSAP animations initial states */
+.gsap-fade-in {
+  opacity: 0;
+}
+
+.gsap-slide-up {
+  opacity: 0;
+  transform: translateY(60px);
+}
+
+.gsap-slide-right {
+  opacity: 0;
+  transform: translateX(-60px);
+}
+
+.gsap-slide-left {
+  opacity: 0;
+  transform: translateX(60px);
+}
+
+.gsap-scale {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+/* Parallax */
+.parallax-container {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.parallax-layer {
+  transform-style: preserve-3d;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce-slow {
+  0%,
+  100% {
+    transform: translateY(-5%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1s ease-out;
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* 既存のコードの後に追加 */
+
+/* White theme utilities */
+.bg-cream {
+  background-color: #fafaf8;
+}
+
+.text-warm-gray {
+  color: #5a5550;
+}
+
+/* Hero specific animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 1.2s ease-out;
 }
