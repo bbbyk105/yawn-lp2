@@ -48,11 +48,13 @@ export default function BlogCard({ post }: BlogCardProps) {
             <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent" />
 
             {/* カテゴリーバッジ */}
-            <div className="absolute top-3 left-3 z-10">
-              <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-hinoki-brown font-en-accent text-[10px] tracking-wider uppercase rounded-full font-semibold">
-                {post.category.name}
-              </span>
-            </div>
+            {post.category && (
+              <div className="absolute top-3 left-3 z-10">
+                <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-hinoki-brown font-en-accent text-[10px] tracking-wider uppercase rounded-full font-semibold">
+                  {post.category.name}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* コンテンツ */}

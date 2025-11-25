@@ -16,14 +16,26 @@ export function formatDate(dateString: string): string {
   });
 }
 
-// スムーススクロール
-export function smoothScrollTo(targetId: string) {
-  const element = document.getElementById(targetId);
-  if (element) {
-    element.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+/**
+ * セクションへのスムーススクロール
+ * 同じページ内ならスクロール、違うページなら遷移
+ */
+export function smoothScrollTo(sectionId: string) {
+  // 現在のパスを取得
+  const currentPath = window.location.pathname;
+
+  // トップページにいる場合
+  if (currentPath === "/") {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  } else {
+    // 他のページにいる場合は、トップページに遷移してからスクロール
+    window.location.href = `/#${sectionId}`;
   }
 }
 

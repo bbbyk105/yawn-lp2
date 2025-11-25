@@ -10,6 +10,7 @@ import HowToUseSection from "@/components/sections/HowToUseSection";
 import BrandStorySection from "@/components/sections/BrandStorySection";
 import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
+import HashScrollHandler from "@/components/utils/HashScrollHandler";
 import { getBlogPosts } from "@/lib/microcms";
 
 export const revalidate = 3600; // 1時間ごとに再検証
@@ -20,6 +21,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <HashScrollHandler />
       <ScrollProgress />
       <Header />
 
