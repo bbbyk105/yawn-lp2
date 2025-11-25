@@ -12,10 +12,11 @@ import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
 import { getBlogPosts } from "@/lib/microcms";
 
-export const revalidate = 3600;
+export const revalidate = 3600; // 1時間ごとに再検証
 
 export default async function HomePage() {
-  const blogPosts = await getBlogPosts(6);
+  // getBlogPostsの返り値は { posts, totalCount } のオブジェクト
+  const { posts: blogPosts } = await getBlogPosts({ limit: 6 });
 
   return (
     <>

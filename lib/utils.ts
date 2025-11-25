@@ -9,11 +9,11 @@ export function cn(...inputs: ClassValue[]) {
 // 日付フォーマット
 export function formatDate(dateString: string): string {
   const date = new Date(dateString);
-  return new Intl.DateTimeFormat("ja-JP", {
+  return date.toLocaleDateString("ja-JP", {
     year: "numeric",
     month: "long",
     day: "numeric",
-  }).format(date);
+  });
 }
 
 // スムーススクロール

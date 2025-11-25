@@ -55,7 +55,8 @@ export default function BlogSection({ posts }: BlogSectionProps) {
     return () => ctx.revert();
   }, [posts]);
 
-  if (!posts || posts.length === 0) {
+  // postsが配列かつ空でない場合のみ表示
+  if (!Array.isArray(posts) || posts.length === 0) {
     return null;
   }
 
@@ -76,7 +77,7 @@ export default function BlogSection({ posts }: BlogSectionProps) {
             Forest Journal
           </p>
           <h2 className="font-ja-display text-3xl md:text-4xl lg:text-5xl tracking-wide text-black">
-            森の読み物
+            BLOGS
           </h2>
           <p className="text-sm md:text-base text-zinc-600 max-w-xl mx-auto leading-relaxed">
             富士山麓の自然、ヒノキの魅力、森林浴の効果について綴ります

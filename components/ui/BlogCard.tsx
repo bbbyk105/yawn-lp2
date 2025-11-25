@@ -13,6 +13,9 @@ interface BlogCardProps {
 export default function BlogCard({ post }: BlogCardProps) {
   const [isHovered, setIsHovered] = useState(false);
 
+  // slug が undefined の場合は id を使用
+  const href = `/blog/${post.slug || post.id}`;
+
   return (
     <article
       className="blog-card group relative h-full"
@@ -22,7 +25,7 @@ export default function BlogCard({ post }: BlogCardProps) {
       onMouseLeave={() => setIsHovered(false)}
     >
       <Link
-        href={`/blog/${post.slug}`}
+        href={href}
         className="block h-full"
         aria-label={`${post.title}の記事を読む`}
       >
@@ -104,13 +107,13 @@ export default function BlogCard({ post }: BlogCardProps) {
 
       {/* 構造化データ */}
       <div className="hidden">
-        <link itemProp="mainEntityOfPage" href={`/blog/${post.slug}`} />
+        <link itemProp="mainEntityOfPage" href={href} />
         <div
           itemProp="publisher"
           itemScope
           itemType="https://schema.org/Organization"
         >
-          <meta itemProp="name" content="YawnNap" />
+          <meta itemProp="name" content="Fuji Hinoki" />
         </div>
       </div>
     </article>
