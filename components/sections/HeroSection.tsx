@@ -13,25 +13,28 @@ const heroTexts = [
     line1: "ほんの少しの森で、",
     line2: "今日が変わる。",
     sub: "A Little Forest Changes Your Day",
+    image: "/images/hero/forest-3.jpg",
   },
   {
     id: 2,
     line1: "ポケットサイズの",
     line2: "森林浴",
     sub: "Pocket-Sized Forest Bathing",
+    image: "/images/hero/forest-2.jpg",
   },
   {
     id: 3,
     line1: "森でちょっと",
     line2: "一息しませんか？",
     sub: "Take a Breath in the Forest",
+    image: "/images/hero/fuji-mountain.jpg",
   },
 ];
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const imageRef = useRef<HTMLDivElement>(null);
+  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -44,15 +47,19 @@ export default function HeroSection() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.to(imageRef.current, {
-        y: 150,
-        scale: 1.1,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.5,
-        },
+      imageRefs.current.forEach((imageRef) => {
+        if (imageRef) {
+          gsap.to(imageRef, {
+            y: 150,
+            scale: 1.1,
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: "top top",
+              end: "bottom top",
+              scrub: 1.5,
+            },
+          });
+        }
       });
 
       gsap.to(overlayRef.current, {
@@ -75,22 +82,34 @@ export default function HeroSection() {
       className="relative h-screen w-full overflow-hidden bg-white"
       id="hero"
     >
-      {/* 背景画像（右半分） */}
+      {/* 背景画像（右半分） - 3枚が切り替わる */}
       <div className="absolute inset-0 grid grid-cols-1 lg:grid-cols-2">
         <div className="bg-white" />
 
-        <div ref={imageRef} className="relative overflow-hidden">
-          <Image
-            src="/images/hero/fuji-mountain.jpg"
-            alt="富士山麓のヒノキの森"
-            fill
-            className="object-cover"
-            priority
-            quality={95}
-          />
+        <div className="relative overflow-hidden">
+          {heroTexts.map((text, index) => (
+            <div
+              key={text.id}
+              ref={(el) => {
+                imageRefs.current[index] = el;
+              }}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                currentIndex === index ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <Image
+                src={text.image}
+                alt={`${text.line1}${text.line2}`}
+                fill
+                className="object-cover"
+                priority={index === 0}
+                quality={95}
+              />
+            </div>
+          ))}
           <div
             ref={overlayRef}
-            className="absolute inset-0 bg-linear-to-l from-transparent via-white/20 to-white/60"
+            className="absolute inset-0 bg-linear-to-l from-transparent via-white/20 to-white/60 z-10"
           />
         </div>
       </div>
@@ -174,6 +193,22 @@ export default function HeroSection() {
               >
                 Discover More
               </button>
+            </div>
+
+            {/* インジケーター（オプション） */}
+            <div className="flex gap-2 pt-4">
+              {heroTexts.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`h-1 rounded-full transition-all duration-300 ${
+                    currentIndex === index
+                      ? "w-8 bg-hinoki-gold"
+                      : "w-4 bg-zinc-300 hover:bg-zinc-400"
+                  }`}
+                  aria-label={`スライド${index + 1}に移動`}
+                />
+              ))}
             </div>
           </div>
 
