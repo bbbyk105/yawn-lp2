@@ -143,9 +143,9 @@ export default function CTASection() {
           </p>
         </div>
 
-        {/* 装飾テキスト */}
+        {/* 装飾テキスト - 見やすく変更 */}
         <div className="pt-12">
-          <p className="font-en-display text-[6rem] md:text-[8rem] lg:text-[10rem] text-zinc-100 font-bold tracking-tighter leading-none">
+          <p className="font-en-display text-[6rem] md:text-[8rem] lg:text-[10rem] text-zinc-200 font-bold tracking-tighter leading-none">
             YawnNap
           </p>
         </div>
