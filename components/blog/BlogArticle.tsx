@@ -257,7 +257,7 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
           )}
 
           {/* タイトル */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-zinc-900 mb-4 leading-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-zinc-900 mb-4 leading-tight">
             {post.title}
           </h1>
 
