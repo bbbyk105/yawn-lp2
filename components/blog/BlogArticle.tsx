@@ -35,22 +35,69 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
   const [isTocOpen, setIsTocOpen] = useState(false);
   const [toc, setToc] = useState<TocItem[]>([]);
 
-  // 目次の生成（DOMマウント後に実行）
+  // microCMSのコンテンツを処理
   useEffect(() => {
     if (!contentRef.current) return;
 
+    // 画像の最適化処理
+    const images = contentRef.current.querySelectorAll<HTMLImageElement>("img");
+    images.forEach((img) => {
+      // microCMSの画像URLに最適化パラメータを追加
+      if (img.src.includes("microcms-assets.io")) {
+        const url = new URL(img.src);
+        if (!url.searchParams.has("w")) {
+          url.searchParams.set("w", "1200");
+          url.searchParams.set("fm", "webp");
+          url.searchParams.set("q", "80");
+          img.src = url.toString();
+        }
+      }
+
+      // 遅延読み込み
+      img.loading = "lazy";
+
+      // altが空の場合はaria-hidden
+      if (!img.alt) {
+        img.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    // 外部リンクに rel と target を追加
+    const links =
+      contentRef.current.querySelectorAll<HTMLAnchorElement>("a[href^='http']");
+    links.forEach((link) => {
+      if (!link.hostname.includes(window.location.hostname)) {
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+      }
+    });
+
+    // テーブルをスクロール可能にラップ
+    const tables = contentRef.current.querySelectorAll("table");
+    tables.forEach((table) => {
+      if (!table.parentElement?.classList.contains("table-wrapper")) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "table-wrapper";
+        table.parentNode?.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+      }
+    });
+
+    // 目次の生成
     const headings = Array.from(
-      contentRef.current.querySelectorAll<HTMLHeadingElement>("h2")
+      contentRef.current.querySelectorAll<HTMLHeadingElement>("h2, h3")
     );
 
     const tocItems: TocItem[] = headings.map((heading, index) => {
       const id = heading.id || `heading-${index}`;
       heading.id = id;
 
+      const level = parseInt(heading.tagName.substring(1));
+
       return {
         id,
         text: heading.textContent || "",
-        level: 2,
+        level,
       };
     });
 
@@ -207,7 +254,7 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
           <div className="container mx-auto px-4 sm:px-6 max-w-[1200px]">
             <button
               onClick={() => setIsTocOpen(!isTocOpen)}
-              className="w-full py-3 flex items-center justify-between text-sm font-medium text-zinc-900 hover:text-zinc-900"
+              className="w-full py-3 flex items-center justify-between text-sm font-medium text-zinc-900"
             >
               <span className="flex items-center gap-2">
                 <List className="w-4 h-4" />
@@ -228,9 +275,11 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
                       <button
                         onClick={() => scrollToHeading(item.id)}
                         className={`block w-full text-left py-1.5 px-3 rounded text-sm transition-colors ${
+                          item.level === 3 ? "pl-6" : ""
+                        } ${
                           activeId === item.id
                             ? "text-blue-600 font-medium bg-blue-50"
-                            : "text-zinc-900 hover:text-zinc-900 hover:bg-zinc-50"
+                            : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50"
                         }`}
                       >
                         {item.text}
@@ -251,59 +300,17 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
           <div className="flex-1 min-w-0">
             {/* リード文 */}
             {post.excerpt && (
-              <div className="mb-12 p-5 bg-zinc-50 rounded-md border border-zinc-200">
-                <p className="text-[15px] text-zinc-900 leading-[1.8]">
+              <div className="mb-12 p-6 bg-zinc-50 rounded-lg border border-zinc-200">
+                <p className="text-base text-zinc-700 leading-relaxed">
                   {post.excerpt}
                 </p>
               </div>
             )}
 
-            {/* 本文コンテンツ */}
+            {/* 本文コンテンツ - microCMS最適化版 */}
             <div
               ref={contentRef}
-              className="
-                prose prose-zinc max-w-none
-                
-                prose-headings:font-bold prose-headings:text-zinc-900
-                prose-h2:text-[26px] prose-h2:mt-14 prose-h2:mb-5 prose-h2:pb-2
-                prose-h2:border-b prose-h2:border-zinc-200
-                prose-h3:text-[22px] prose-h3:mt-10 prose-h3:mb-4
-                prose-h4:text-[18px] prose-h4:mt-8 prose-h4:mb-3
-                
-                prose-p:text-zinc-900 prose-p:leading-[1.8] prose-p:my-6 prose-p:text-[15px]
-                
-                prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-a:font-normal
-                
-                prose-strong:text-zinc-900 prose-strong:font-semibold
-                
-                prose-code:bg-zinc-100 prose-code:text-pink-600 prose-code:px-1.5 
-                prose-code:py-0.5 prose-code:rounded prose-code:text-[0.88em] prose-code:font-mono
-                prose-code:before:content-none prose-code:after:content-none
-                
-                prose-pre:bg-[#1e1e1e] prose-pre:text-zinc-100 prose-pre:rounded-md 
-                prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:text-[14px] prose-pre:leading-[1.6]
-                prose-pre:my-6 prose-pre:shadow-sm prose-pre:border prose-pre:border-zinc-200
-                
-                prose-blockquote:border-l-[3px] prose-blockquote:border-zinc-300 
-                prose-blockquote:bg-transparent prose-blockquote:py-1 prose-blockquote:px-4
-                prose-blockquote:not-italic prose-blockquote:text-zinc-900 prose-blockquote:my-6
-                prose-blockquote:font-normal
-                
-                prose-img:rounded-md prose-img:border prose-img:border-zinc-200 prose-img:my-8 prose-img:w-full
-                
-                prose-ul:my-6 prose-ul:list-disc prose-ul:pl-6
-                prose-ol:my-6 prose-ol:list-decimal prose-ol:pl-6
-                prose-li:text-zinc-900 prose-li:my-2 prose-li:leading-[1.8] prose-li:text-[15px]
-                
-                prose-table:text-[14px] prose-table:my-8 prose-table:border-collapse
-                prose-table:w-full
-                prose-thead:bg-zinc-50
-                prose-th:border prose-th:border-zinc-200 prose-th:bg-zinc-50
-                prose-th:px-3 prose-th:py-2 prose-th:font-semibold prose-th:text-left prose-th:text-zinc-900
-                prose-td:border prose-td:border-zinc-200 prose-td:px-3 prose-td:py-2 prose-td:text-zinc-900
-                
-                prose-hr:border-zinc-200 prose-hr:my-10
-              "
+              className="microcms-content"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
 
@@ -397,9 +404,11 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
                         <button
                           onClick={() => scrollToHeading(item.id)}
                           className={`block w-full text-left py-2 px-3 rounded transition-all ${
+                            item.level === 3 ? "pl-6 text-xs" : ""
+                          } ${
                             activeId === item.id
                               ? "text-blue-600 font-medium bg-blue-50"
-                              : "text-zinc-900 hover:text-zinc-900 hover:bg-zinc-50"
+                              : "text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50"
                           }`}
                         >
                           {item.text}
@@ -432,7 +441,7 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
       <div className="container mx-auto px-4 sm:px-6 max-w-[1200px] py-8 border-t border-zinc-200">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-2 text-sm text-zinc-900 hover:text-zinc-900 transition-colors group"
+          className="inline-flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900 transition-colors group"
         >
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
           ブログ一覧に戻る
