@@ -145,9 +145,11 @@ export default function ProductIntroSection() {
           </p>
 
           <h2 className="font-ja-display text-2xl md:text-3xl lg:text-4xl leading-relaxed tracking-wide text-black">
-            ストレスを感じやすい毎日に、
+            ストレスを感じたとき
             <br />
-            ひと呼吸で心がふっと軽くなる、
+            シュッとひと吹き。
+            <br />
+            ひと呼吸でふっと軽くなる、
             <br />
             <span className="text-hinoki-gold">森の香り。</span>
           </h2>

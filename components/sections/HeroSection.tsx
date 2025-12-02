@@ -10,7 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 const heroTexts = [
   {
     id: 1,
-    line1: "ほんの少しの森で、",
+    line1: "ほんの少しの深呼吸で、",
     line2: "今日が変わる。",
     sub: "A Little Forest Changes Your Day",
     image: "/images/hero/forest-3.jpg",
@@ -24,7 +24,7 @@ const heroTexts = [
   },
   {
     id: 3,
-    line1: "森でちょっと",
+    line1: "ヒノキの森でちょっと",
     line2: "一息しませんか？",
     sub: "Take a Breath in the Forest",
     image: "/images/hero/fuji-mountain.jpg",
@@ -148,14 +148,16 @@ export default function HeroSection() {
             {/* 固定サブコピー */}
             <div className="space-y-4 pt-6 border-t border-zinc-200">
               <p className="font-ja-display text-lg md:text-xl text-black tracking-wider">
-                ＿持ち歩ける深呼吸＿
+                ＿持ち歩ける森の香り＿
               </p>
               <p className="text-sm md:text-base text-zinc-600 leading-relaxed">
-                富士山麓の富士ヒノキの香りを
+                富士山麓のフレッシュな富士ヒノキの香りを
                 <br />
-                ポケットに入れて持ち歩く
+                あなたにも届けたい
                 <br />
-                フレグランスペーパー
+                バッグに入れて持ち歩く
+                <br />
+                フォレストフレグランス
               </p>
             </div>
 

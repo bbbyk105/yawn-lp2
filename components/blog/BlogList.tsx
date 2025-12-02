@@ -35,7 +35,9 @@ export default function BlogList({
             BLOGS
           </h1>
           <p className="text-sm md:text-base text-zinc-600 max-w-2xl mx-auto leading-relaxed">
-            富士山麓の自然、ヒノキの魅力、森林浴の効果について綴ります
+            富士山麓の自然、富士ヒノキの魅力、
+            <br />
+            日々のリラックス方法について綴ります。
           </p>
         </div>
 

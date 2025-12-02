@@ -45,7 +45,7 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata: Metadata = {
   title: "YawnNap - 富士ヒノキのフレグランスペーパー | ポケットサイズの森林浴",
   description:
-    "ほんの少しの森で、今日が変わる。富士山麓の富士ヒノキの香りをポケットに入れて持ち歩ける、フレグランスペーパーYawnNap。持ち歩ける深呼吸で、忙しい毎日にひと呼吸分の森を。",
+    "ほんの少しの深呼吸で、今日が変わる。富士山麓の富士ヒノキの香りをポケットに入れて持ち歩ける、フレグランスペーパーYawnNap。持ち歩ける深呼吸で、忙しい毎日にひと呼吸分の森を。",
   keywords: [
     "富士ヒノキ",
     "フレグランスペーパー",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "YawnNap - ポケットサイズの森林浴",
     description:
-      "ほんの少しの森で、今日が変わる。富士山麓の富士ヒノキの香りを持ち歩く。",
+      "ほんの少しの深呼吸で、今日が変わる。富士山麓の富士ヒノキの香りを持ち歩く。",
     images: ["/images/og-image.jpg"],
     type: "website",
     locale: "ja_JP",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "YawnNap - ポケットサイズの森林浴",
-    description: "ほんの少しの森で、今日が変わる。",
+    description: "ほんの少しの深呼吸で、今日が変わる。",
     images: ["/images/twitter-image.jpg"],
   },
   robots: {
