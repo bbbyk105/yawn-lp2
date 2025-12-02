@@ -10,10 +10,14 @@ gsap.registerPlugin(ScrollTrigger);
 const products = [
   {
     id: 1,
-    name: "商品タイプA",
+    name: "富士山 ひのきアロマウォーター",
     description:
-      "最もスタンダードなタイプ。毎日の持ち歩きに最適なサイズ感で、バッグやポケットに忍ばせやすい定番の一枚。",
-    features: ["持ち運びやすいサイズ", "毎日使える", "ギフトにも最適"],
+      "スプレータイプのひのき蒸留水。持ち歩きに最適なサイズ。バッグやポケットに入れておいて、電車の中や移動中、会議の前にもひと吹き。深呼吸してリラックス。",
+    features: [
+      "持ち運びやすいサイズ感",
+      "気軽に人にも渡せる3本セット",
+      "お土産物としても重宝する富士山パッケージ",
+    ],
     images: [
       "/images/gallery/product-01.jpg",
       "/images/gallery/product-02.jpg",
@@ -22,10 +26,14 @@ const products = [
   },
   {
     id: 2,
-    name: "商品タイプB",
+    name: "富士山 ひのきフレグランスペーパー (四角形)",
     description:
-      "より濃厚な香りを楽しみたい方へ。デスクや枕元など、空間全体をリラックス空間に変えてくれます。",
-    features: ["濃厚な香り", "空間演出", "リラックスタイムに"],
+      "日本の伝統的な格子模様をデザインしたバイオマス素材のフレグランスペーパーでヒノキの香りを楽しむ。デスクや、枕元、キャンドルの側でスプレーを吹きかけながら使えば、香りと共に、キャンドルの光と影を楽しめます。",
+    features: [
+      "光と影の空間を演出",
+      "リラックスへ誘う",
+      "お土産物としても最適",
+    ],
     images: [
       "/images/gallery/product-04.jpg",
       "/images/gallery/product-05.jpg",
@@ -34,10 +42,14 @@ const products = [
   },
   {
     id: 3,
-    name: "商品タイプC",
+    name: "富士山 ひのきフレグランスペーパー（木型)",
     description:
-      "プレミアムラインの特別仕様。ギフトやご自身へのご褒美に。特別な日のための森の香りをお届けします。",
-    features: ["プレミアム仕様", "特別な日に", "ギフトボックス付き"],
+      "組み立てると自立する。可愛らしい木の形のバイオマス素材フレグランスペーパー。優しいヒノキの香りで、デスクに置いたり、紐で垂らすと香りモビールに。小さな森林浴をいつもそばに。",
+    features: [
+      "植物が好きな人へのプレゼントとして",
+      "香りオブジェとして",
+      "何度も楽しめるヒノキスプレー付き",
+    ],
     images: [
       "/images/gallery/product-07.jpg",
       "/images/gallery/product-08.jpg",
@@ -108,10 +120,12 @@ export default function ThreeProductsSection() {
             Our Products
           </p>
           <h2 className="font-ja-display text-3xl md:text-4xl lg:text-5xl tracking-wide text-black">
-            3つのラインナップ
+            ひのきを楽しむ
+            <br />
+            ３つのラインナップ
           </h2>
           <p className="text-sm md:text-base text-zinc-600 max-w-xl mx-auto leading-relaxed">
-            あなたのライフスタイルに合わせて選べる3つのタイプ
+            使いたいシーンに合わせて選べる3タイプ
           </p>
         </div>
 
@@ -162,29 +176,6 @@ export default function ThreeProductsSection() {
                     </li>
                   ))}
                 </ul>
-
-                {/* 詳細ボタン */}
-                <div className="pt-4">
-                  <a
-                    href={`https://yawnnap.shop/products/${product.id}`}
-                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-transparent border border-hinoki-gold text-hinoki-gold font-en-accent text-xs tracking-wider uppercase rounded-full transition-all duration-300 hover:bg-hinoki-gold hover:text-white"
-                  >
-                    詳細を見る
-                    <svg
-                      className="w-3 h-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"
-                      />
-                    </svg>
-                  </a>
-                </div>
               </div>
 
               {/* 画像グリッド（3枚） */}
