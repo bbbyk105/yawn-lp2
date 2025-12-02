@@ -9,13 +9,13 @@ gsap.registerPlugin(ScrollTrigger);
 const steps = [
   {
     number: "01",
-    title: "持ち歩いて深呼吸",
+    title: "さっと取り出して深呼吸",
     description:
       "バッグから取り出して香りを吸い込むだけ。ストレスで浅くなった呼吸がすっと整います。",
   },
   {
     number: "02",
-    title: "置くだけでリラックス空間に",
+    title: "香りのオブジェとして",
     description:
       "デスクや枕元など、小さなスペースに置くだけで、森林浴のような清々しさ。",
   },

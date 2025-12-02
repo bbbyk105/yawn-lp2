@@ -103,13 +103,15 @@ export default function CTASection() {
           </p>
 
           <h2 className="font-ja-display text-3xl md:text-4xl lg:text-5xl tracking-wide leading-tight text-black">
-            あなたのポケットに
+            ＿持ち歩ける深呼吸＿
             <br />
-            <span className="text-hinoki-gold">森を届けます</span>
+            <span className="text-hinoki-gold">
+              ヒノキの森でちょっと一息しませんか？
+            </span>
           </h2>
 
           <p className="text-lg md:text-xl text-zinc-700 leading-relaxed">
-            富士山麓の檜の香りで、毎日に小さな癒しを
+            日本の息吹が宿る、やさしい香り
           </p>
         </div>
 

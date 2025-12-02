@@ -81,7 +81,7 @@ export default function BrandStorySection() {
               Brand Story
             </p>
             <h2 className="font-ja-display text-3xl md:text-4xl lg:text-5xl tracking-wide text-black">
-              ブランドストーリー
+              富士山からとどけるヒノキの香り
             </h2>
           </div>
 
@@ -93,13 +93,13 @@ export default function BrandStorySection() {
               }}
               className="text-xl md:text-2xl text-black leading-relaxed text-center font-ja-display"
             >
-              富士山麓の木が持つ
+              富士山のふもとで育まれた
               <span className="text-hinoki-gold font-bold">
                 &ldquo;清らかな香り&rdquo;
               </span>
               を、
               <br className="hidden md:block" />
-              誰かの心にも届けたい。
+              で日常に安らぎを届けたい。
             </p>
 
             <div className="h-px bg-linear-to-r from-transparent via-hinoki-gold to-transparent" />
@@ -110,7 +110,9 @@ export default function BrandStorySection() {
               }}
               className="text-base md:text-lg text-zinc-700 leading-relaxed max-w-3xl mx-auto"
             >
-              ヒノキは昔から、神社や寺院、ヒノキ風呂などに使われてきた日本では古くから親しまれた木。
+              ヒノキは、日本書紀にもスサノオノミコトが宮殿に用いるよう教えたと記されるほど、
+              古くから日本で親しまれてきた木です。
+              神社や寺院の建築材としてはもちろん、ヒノキ風呂などにも使用され
               暮らしの中で心を整え、心を整える素材として大切にされてきました。
             </p>
 
@@ -158,12 +160,12 @@ export default function BrandStorySection() {
                 }}
                 className="text-base md:text-lg text-zinc-700 leading-relaxed max-w-2xl mx-auto"
               >
-                そう思ってもなかなかすぐには森にはいけないけれど
+                そう思ってすぐには森にはいけないけれど、
                 <br />
-                持ち歩く富士ヒノキの香りでそっと深呼吸してみてください。
+                富士ヒノキの香りをそっと携えて深呼吸してみてください
                 <br />
                 <span className="text-hinoki-gold font-bold text-lg md:text-xl">
-                  きっと、リラックスできるはず。
+                  その香りでリラックス。あなたをやさしく整えてくれるはず。
                 </span>
               </p>
             </div>

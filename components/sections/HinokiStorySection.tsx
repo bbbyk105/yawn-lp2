@@ -111,9 +111,9 @@ export default function HinokiStorySection() {
             100% Mt. Fuji Hinoki
           </p>
           <h2 className="font-ja-display text-3xl md:text-4xl lg:text-5xl tracking-wide leading-tight text-black">
-            100%富士山麓のヒノキから生まれた
+            100% 国産のヒノキから生まれた
             <br />
-            <span className="text-hinoki-gold">爽やかな香り。</span>
+            <span className="text-hinoki-gold">爽やかな森の香り。</span>
           </h2>
         </div>
 
@@ -226,11 +226,16 @@ export default function HinokiStorySection() {
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-1 h-8 bg-hinoki-gold rounded-full" />
                 <h3 className="font-ja-display text-lg md:text-xl tracking-wide text-black">
-                  香りづけは「富士ヒノキ抽出水＋ヒノキ精油」だけ
+                  香りづけは「富士ヒノキ抽出水 + ヒノキ精油 +
+                  フレッシュなヒノキチップ」だけ
                 </h3>
               </div>
               <p className="text-sm md:text-base text-zinc-700 leading-relaxed">
-                化学的な香料ではなく、天然の蒸留水と精油だけで香りを作ることで、敏感な人でも心地よく使えるようにしています。
+                化学的な香料を使用せず、 天然の蒸留水と精油（0.5～1%
+                以下に希釈）だけの香りです。
+                敏感な方でも心地よく使えるようにブレンドしていますが、
+                アロマ水はフレグランスペーパーに吹きかけてお使いください。
+                （肌に吹きかけ赤みが出る場合はご使用をお控え下さい。）
               </p>
             </div>
           </div>
@@ -250,7 +255,9 @@ export default function HinokiStorySection() {
                 </h3>
               </div>
               <p className="text-sm md:text-base text-zinc-700 leading-relaxed">
-                使うほどに自然へと還る素材。旅のおともにも、ギフトにも安心です。
+                フレグランスペーパーの素材は、
+                土に還りやすいバイオマス不織布を使用しています。
+                旅先や飛行機の中などでもリラックスのお供に、お使い下さい。
               </p>
             </div>
           </div>
