@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import BlogCard from "../ui/BlogCard";
 import type { BlogPost } from "@/lib/types";
+import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -55,7 +56,6 @@ export default function BlogSection({ posts }: BlogSectionProps) {
     return () => ctx.revert();
   }, [posts]);
 
-  // postsが配列かつ空でない場合のみ表示
   if (!Array.isArray(posts) || posts.length === 0) {
     return null;
   }
@@ -67,11 +67,9 @@ export default function BlogSection({ posts }: BlogSectionProps) {
       id="blog"
       aria-labelledby="blog-heading"
     >
-      {/* 背景テクスチャ */}
       <div className="absolute inset-0 hinoki-texture opacity-10" />
 
       <div className="relative z-10 container mx-auto px-6 md:px-12 lg:px-24">
-        {/* セクションヘッダー */}
         <div ref={titleRef} className="mb-16 md:mb-20 text-center space-y-4">
           <p className="font-en-accent text-[10px] md:text-xs tracking-[0.4em] text-hinoki-brown uppercase">
             Forest Journal
@@ -86,7 +84,6 @@ export default function BlogSection({ posts }: BlogSectionProps) {
           </p>
         </div>
 
-        {/* ブログカードグリッド */}
         <div
           ref={cardsRef}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
@@ -96,9 +93,8 @@ export default function BlogSection({ posts }: BlogSectionProps) {
           ))}
         </div>
 
-        {/* もっと見るリンク */}
         <div className="mt-16 text-center">
-          <a
+          <Link
             href="/blog"
             className="group inline-flex items-center gap-3 font-en-accent text-xs tracking-[0.3em] text-hinoki-brown uppercase transition-all duration-300 hover:gap-4 hover:text-hinoki-gold"
           >
@@ -116,7 +112,7 @@ export default function BlogSection({ posts }: BlogSectionProps) {
                 d="M17 8l4 4m0 0l-4 4m4-4H3"
               />
             </svg>
-          </a>
+          </Link>
         </div>
       </div>
     </section>
