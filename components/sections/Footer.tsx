@@ -29,7 +29,7 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-3 pt-3">
               <a
-                href="https://instagram.com/yawnnap"
+                href="https://www.instagram.com/yawn.nap_"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 flex items-center justify-center rounded-full border border-zinc-300 text-zinc-500 hover:text-hinoki-gold hover:border-hinoki-gold transition-all duration-300"
