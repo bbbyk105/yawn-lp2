@@ -13,7 +13,7 @@ import Footer from "@/components/sections/Footer";
 import HashScrollHandler from "@/components/utils/HashScrollHandler";
 import { getBlogPosts } from "@/lib/microcms";
 
-export const revalidate = 3600; // 1時間ごとに再検証
+export const revalidate = 60; // 1分ごとに再検証（トップのブログ更新をすぐ反映）
 
 export default async function HomePage() {
   // getBlogPostsの返り値は { posts, totalCount } のオブジェクト
