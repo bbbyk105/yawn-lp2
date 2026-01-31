@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { getBlogPosts, getCategories } from "@/lib/microcms";
 import { generateBlogListJsonLd } from "@/lib/seo";
 import BlogList from "@/components/blog/BlogList";
+import { BLOG_PER_PAGE } from "@/lib/constants";
 
 const BLOG_KEYWORDS = [
   "富士山",
@@ -32,23 +33,22 @@ const BLOG_KEYWORDS = [
 ];
 
 export const metadata: Metadata = {
-  title: "ブログ | 富士山・ひのき・アロマ・リラックス情報 | Fuji Hinoki",
+  title: "ブログ | 富士山・ひのき・アロマ・リラックス情報 | YawnNap",
   description:
     "富士山麓の自然、ヒノキの魅力、森林浴の効果について綴ります。富士山観光、ひのきの香り、アロマ効果、リラックス方法、日本土産情報など、月間1000ビュー以上の高品質なコンテンツをお届けします。",
   keywords: BLOG_KEYWORDS.join(", "),
   openGraph: {
-    title: "ブログ | 富士山・ひのき・アロマ・リラックス情報 | Fuji Hinoki",
+    title: "ブログ | 富士山・ひのき・アロマ・リラックス情報 | YawnNap",
     description:
       "富士山麓の自然、ヒノキの魅力、森林浴の効果について綴ります。富士山観光、ひのきの香り、アロマ効果、リラックス方法、日本土産情報をお届けします。",
     url: `${process.env.NEXT_PUBLIC_SITE_URL}/blog`,
     type: "website",
-    siteName: "Fuji Hinoki",
+    siteName: "YawnNap",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ブログ | 富士山・ひのき・アロマ・リラックス情報 | Fuji Hinoki",
-    description:
-      "富士山麓の自然、ヒノキの魅力、森林浴の効果について綴ります。",
+    title: "ブログ | 富士山・ひのき・アロマ・リラックス情報 | YawnNap",
+    description: "富士山麓の自然、ヒノキの魅力、森林浴の効果について綴ります。",
   },
   robots: {
     index: true,
@@ -69,25 +69,26 @@ export const metadata: Metadata = {
 export const revalidate = 60; // ISR: 60秒ごとに再検証
 
 export default async function BlogPage() {
-  const { posts, totalCount } = await getBlogPosts({ limit: 12 });
+  const { posts, totalCount } = await getBlogPosts({
+    limit: BLOG_PER_PAGE,
+    offset: 0,
+  });
   const categories = await getCategories();
 
-  // JSON-LD構造化データ
   const jsonLd = generateBlogListJsonLd(posts);
 
   return (
     <>
-      {/* JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-
       <main className="min-h-screen bg-white">
         <BlogList
           initialPosts={posts}
           totalCount={totalCount}
           categories={categories}
+          currentPage={1}
         />
       </main>
     </>

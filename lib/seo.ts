@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { BlogPost } from "./types";
 
-const SITE_NAME = "Fuji Hinoki";
+const SITE_NAME = "YawnNap";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og-image.jpg`;
 

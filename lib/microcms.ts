@@ -93,21 +93,60 @@ export const getBlogPostBySlug = async (slugOrId: string) => {
   }
 };
 
-// 全ブログ記事のslug取得（静的生成用）
-export const getAllBlogSlugs = async () => {
+const BLOG_FETCH_LIMIT = 100;
+
+// 全ブログ記事のslug取得（静的生成・sitemap用・件数制限なし）
+export const getAllBlogSlugs = async (): Promise<string[]> => {
+  try {
+    const allSlugs: string[] = [];
+    let offset = 0;
+
+    while (true) {
+      const data = await client.get<MicroCMSResponse<BlogPost>>({
+        endpoint: "blogs",
+        queries: {
+          fields: "id,slug",
+          limit: BLOG_FETCH_LIMIT,
+          offset,
+        },
+      });
+
+      const slugs = data.contents.map((post) => post.slug || post.id);
+      allSlugs.push(...slugs);
+
+      if (
+        data.contents.length < BLOG_FETCH_LIMIT ||
+        allSlugs.length >= data.totalCount
+      ) {
+        break;
+      }
+      offset += BLOG_FETCH_LIMIT;
+    }
+
+    return allSlugs;
+  } catch (error) {
+    console.error("Error fetching blog slugs:", error);
+    return [];
+  }
+};
+
+/** 静的生成用：最新N件のslugのみ取得（ビルド時間短縮） */
+export const getBlogSlugsForStaticParams = async (
+  limit: number = 50,
+): Promise<string[]> => {
   try {
     const data = await client.get<MicroCMSResponse<BlogPost>>({
       endpoint: "blogs",
       queries: {
         fields: "id,slug",
-        limit: 100,
+        limit: Math.min(limit, BLOG_FETCH_LIMIT),
+        offset: 0,
+        orders: "-publishedAt",
       },
     });
-
-    // slugが存在する記事のみ、存在しなければidを使用
     return data.contents.map((post) => post.slug || post.id);
   } catch (error) {
-    console.error("Error fetching blog slugs:", error);
+    console.error("Error fetching blog slugs for static params:", error);
     return [];
   }
 };
@@ -128,11 +167,30 @@ export const getCategories = async () => {
   }
 };
 
+// slugでカテゴリー1件取得（カテゴリページ用）
+export const getCategoryBySlug = async (
+  slug: string,
+): Promise<Category | null> => {
+  try {
+    const data = await client.get<MicroCMSResponse<Category>>({
+      endpoint: "categories",
+      queries: {
+        filters: `slug[equals]${slug}`,
+        limit: 1,
+      },
+    });
+    return data.contents[0] ?? null;
+  } catch (error) {
+    console.error("Error fetching category by slug:", error);
+    return null;
+  }
+};
+
 // 関連記事取得
 export const getRelatedPosts = async (
   currentPostId: string,
   categoryId?: string,
-  limit: number = 3
+  limit: number = 3,
 ) => {
   try {
     const safeLimit = Math.min(limit + 1, 100);

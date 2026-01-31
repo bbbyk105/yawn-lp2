@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
   getBlogPostBySlug,
-  getAllBlogSlugs,
+  getBlogSlugsForStaticParams,
   getRelatedPosts,
 } from "@/lib/microcms";
 import { generateBlogMetadata, generateBlogJsonLd } from "@/lib/seo";
@@ -14,13 +14,10 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-// 静的パス生成
+// 静的パス生成（最新50件のみ事前生成、それ以外は初回アクセス時にISRで生成）
 export async function generateStaticParams() {
-  const slugs = await getAllBlogSlugs();
-
-  return slugs.map((slug) => ({
-    slug,
-  }));
+  const slugs = await getBlogSlugsForStaticParams(50);
+  return slugs.map((slug) => ({ slug }));
 }
 
 // メタデータ生成
@@ -30,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!post) {
     return {
-      title: "記事が見つかりません | Fuji Hinoki",
+      title: "記事が見つかりません | YawnNap",
     };
   }
 
@@ -45,8 +42,8 @@ export default async function BlogPostPage({ params }: Props) {
     notFound();
   }
 
-  // 関連記事取得
-  const relatedPosts = await getRelatedPosts(post.id, post.category?.id, 3);
+  // 関連記事取得（同カテゴリ最大6件）
+  const relatedPosts = await getRelatedPosts(post.id, post.category?.id, 6);
 
   // JSON-LD構造化データ
   const jsonLd = generateBlogJsonLd(post);
