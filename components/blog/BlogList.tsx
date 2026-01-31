@@ -18,7 +18,6 @@ interface BlogListProps {
 export default function BlogList({
   initialPosts,
   totalCount,
-  categories,
   currentPage = 1,
   categorySlug,
 }: BlogListProps) {
@@ -41,38 +40,6 @@ export default function BlogList({
             日々のリラックス方法について綴ります。
           </p>
         </div>
-
-        {/* カテゴリ導線（URLを持つ） */}
-        {categories.length > 0 && (
-          <nav
-            className="mb-12 flex flex-wrap justify-center gap-3"
-            aria-label="カテゴリ"
-          >
-            <Link
-              href="/blog"
-              className={`px-6 py-2 rounded-full text-sm font-en-accent tracking-wider uppercase transition-all duration-300 ${
-                !categorySlug
-                  ? "bg-hinoki-brown text-white"
-                  : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-              }`}
-            >
-              All
-            </Link>
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                href={`/blog/category/${category.slug}`}
-                className={`px-6 py-2 rounded-full text-sm font-en-accent tracking-wider uppercase transition-all duration-300 ${
-                  categorySlug === category.slug
-                    ? "bg-hinoki-brown text-white"
-                    : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-                }`}
-              >
-                {category.name}
-              </Link>
-            ))}
-          </nav>
-        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {initialPosts.map((post) => (
