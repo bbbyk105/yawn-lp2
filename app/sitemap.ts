@@ -1,74 +1,72 @@
 import { MetadataRoute } from "next";
-import { getAllBlogSlugs, getCategories } from "@/lib/microcms";
+import { getAllBlogSitemapEntries, getCategories } from "@/lib/microcms";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
 
 /** サイトマップの最大URL数（Google推奨は50,000。分割する場合はこの値以下に） */
 const SITEMAP_URL_LIMIT = 50000;
 
+// ビルド時に固定されると新しい記事が載らないため、1時間ごとに再生成する
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // ブログ記事（全件）
+  const blogEntries = await getAllBlogSitemapEntries();
+
+  // トップ・ブログ一覧は最新記事が並ぶので、最終更新 = 記事の最終更新
+  const latestPostUpdatedAt = blogEntries
+    .map((entry) => entry.updatedAt)
+    .sort()
+    .at(-1);
+
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: SITE_URL,
-      lastModified: new Date(),
+      lastModified: latestPostUpdatedAt,
       changeFrequency: "daily",
       priority: 1.0,
     },
     {
       url: `${SITE_URL}/blog`,
-      lastModified: new Date(),
+      lastModified: latestPostUpdatedAt,
       changeFrequency: "daily",
       priority: 0.9,
     },
     {
       url: `${SITE_URL}/privacy`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.3,
     },
     {
       url: `${SITE_URL}/terms`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.3,
     },
     {
       url: `${SITE_URL}/contact`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.4,
     },
   ];
 
-  // カテゴリ一覧（1ページ目のみ）
-  let categoryPages: MetadataRoute.Sitemap = [];
-  try {
-    const categories = await getCategories();
-    categoryPages = categories.map((c) => ({
+  // カテゴリ一覧（1ページ目のみ）。slug 未設定のカテゴリはページが存在しないので載せない
+  const categories = await getCategories();
+  const categoryPages: MetadataRoute.Sitemap = categories
+    .filter((c) => c.slug)
+    .map((c) => ({
       url: `${SITE_URL}/blog/category/${c.slug}`,
-      lastModified: new Date(),
       changeFrequency: "daily" as const,
       priority: 0.85,
     }));
-  } catch (error) {
-    console.error("Error fetching categories for sitemap:", error);
-  }
 
-  // ブログ記事（全件）
-  let blogPages: MetadataRoute.Sitemap = [];
-  try {
-    const slugs = await getAllBlogSlugs();
-    blogPages = slugs
-      .slice(0, SITEMAP_URL_LIMIT - staticPages.length - categoryPages.length)
-      .map((slug) => ({
-        url: `${SITE_URL}/blog/${slug}`,
-        lastModified: new Date(),
-        changeFrequency: "weekly" as const,
-        priority: 0.8,
-      }));
-  } catch (error) {
-    console.error("Error generating blog sitemap:", error);
-  }
+  const blogPages: MetadataRoute.Sitemap = blogEntries
+    .slice(0, SITEMAP_URL_LIMIT - staticPages.length - categoryPages.length)
+    .map((entry) => ({
+      url: `${SITE_URL}/blog/${entry.path}`,
+      lastModified: entry.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }));
 
   return [...staticPages, ...categoryPages, ...blogPages];
 }

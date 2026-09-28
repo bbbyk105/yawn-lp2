@@ -12,15 +12,25 @@ import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
 import HashScrollHandler from "@/components/utils/HashScrollHandler";
 import { getBlogPosts } from "@/lib/microcms";
+import { generateSiteJsonLd } from "@/lib/seo";
+import { toBlogCardPost } from "@/lib/utils";
 
 export const revalidate = 360; // 10分ごとに再検証（トップのブログ更新をすぐ反映）
 
 export default async function HomePage() {
   // getBlogPostsの返り値は { posts, totalCount } のオブジェクト
-  const { posts: blogPosts } = await getBlogPosts({ limit: 6 });
+  const { posts } = await getBlogPosts({ limit: 6 });
+  // BlogSection はクライアントコンポーネントなので本文を渡さない
+  const blogPosts = posts.map(toBlogCardPost);
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(generateSiteJsonLd()),
+        }}
+      />
       <HashScrollHandler />
       <ScrollProgress />
       <Header />

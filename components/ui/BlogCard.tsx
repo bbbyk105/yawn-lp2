@@ -1,39 +1,24 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { formatDate } from "@/lib/utils";
-import type { BlogPost } from "@/lib/types";
+import { formatDate, getBlogPostPath } from "@/lib/utils";
+import type { BlogCardPost } from "@/lib/types";
 
 interface BlogCardProps {
-  post: BlogPost;
+  post: BlogCardPost;
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
-
-  // slug が undefined の場合は id を使用
-  const href = `/blog/${post.slug || post.id}`;
+  const href = `/blog/${getBlogPostPath(post)}`;
 
   return (
-    <article
-      className="blog-card group relative h-full"
-      itemScope
-      itemType="https://schema.org/BlogPosting"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <article className="blog-card group relative h-full">
       <Link
         href={href}
         className="block h-full"
         aria-label={`${post.title}の記事を読む`}
       >
         <div
-          className="relative h-full flex flex-col rounded-2xl overflow-hidden bg-white border border-zinc-200 transition-all duration-500 hover:border-hinoki-gold hover:shadow-lg"
-          style={{
-            transform: isHovered ? "translateY(-8px)" : "translateY(0)",
-          }}
+          className="relative h-full flex flex-col rounded-2xl overflow-hidden bg-white border border-zinc-200 transition-all duration-500 hover:border-hinoki-gold hover:shadow-lg group-hover:-translate-y-2"
         >
           {/* サムネイル画像 */}
           <div className="relative aspect-4/3 overflow-hidden">
@@ -42,7 +27,6 @@ export default function BlogCard({ post }: BlogCardProps) {
               alt={post.title}
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
-              itemProp="image"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent" />
@@ -63,7 +47,6 @@ export default function BlogCard({ post }: BlogCardProps) {
             <time
               className="text-xs text-zinc-500 font-en-accent tracking-wide"
               dateTime={post.publishedAt}
-              itemProp="datePublished"
             >
               {formatDate(post.publishedAt)}
             </time>
@@ -71,7 +54,6 @@ export default function BlogCard({ post }: BlogCardProps) {
             {/* タイトル */}
             <h3
               className="font-ja-display text-lg md:text-xl leading-snug line-clamp-2 text-black transition-colors duration-300 group-hover:text-hinoki-gold"
-              itemProp="headline"
             >
               {post.title}
             </h3>
@@ -79,7 +61,6 @@ export default function BlogCard({ post }: BlogCardProps) {
             {/* 抜粋 */}
             <p
               className="flex-1 text-sm text-zinc-600 leading-relaxed line-clamp-2"
-              itemProp="description"
             >
               {post.excerpt}
             </p>
@@ -106,18 +87,6 @@ export default function BlogCard({ post }: BlogCardProps) {
           </div>
         </div>
       </Link>
-
-      {/* 構造化データ */}
-      <div className="hidden">
-        <link itemProp="mainEntityOfPage" href={href} />
-        <div
-          itemProp="publisher"
-          itemScope
-          itemType="https://schema.org/Organization"
-        >
-          <meta itemProp="name" content="Fuji Hinoki" />
-        </div>
-      </div>
     </article>
   );
 }

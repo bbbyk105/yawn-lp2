@@ -14,6 +14,7 @@ const heroTexts = [
     line2: "今日が変わる。",
     sub: "A Little Forest Changes Your Day",
     image: "/images/hero/forest-3.jpg",
+    imageAlt: "木漏れ日を受ける苔むした木の幹",
   },
   {
     id: 2,
@@ -21,6 +22,7 @@ const heroTexts = [
     line2: "森林浴",
     sub: "Pocket-Sized Forest Bathing",
     image: "/images/hero/forest-2.jpg",
+    imageAlt: "丸太が積まれた貯木場と周囲の森",
   },
   {
     id: 3,
@@ -28,6 +30,7 @@ const heroTexts = [
     line2: "一息しませんか？",
     sub: "Take a Breath in the Forest",
     image: "/images/hero/fuji-mountain.jpg",
+    imageAlt: "森の向こうにそびえる富士山",
   },
 ];
 
@@ -101,9 +104,11 @@ export default function HeroSection() {
             >
               <Image
                 src={text.image}
-                alt={`${text.line1}${text.line2}`}
+                alt={text.imageAlt}
                 fill
                 className="object-cover"
+                // スマホは全画面、デスクトップは右半分に表示
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 priority={index === 0}
                 quality={95}
               />
@@ -132,6 +137,7 @@ export default function HeroSection() {
                   className={`absolute inset-0 transition-opacity duration-1000 ${
                     currentIndex === index ? "opacity-100" : "opacity-0"
                   }`}
+                  aria-hidden={currentIndex !== index}
                 >
                   <div className="space-y-3 sm:space-y-4">
                     {/* 英語サブタイトル */}
@@ -139,23 +145,23 @@ export default function HeroSection() {
                       {text.sub}
                     </p>
 
-                    {/* メインコピー */}
-                    <h1 className="font-ja-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.2] sm:leading-[1.3] tracking-wide text-white lg:text-black drop-shadow-lg lg:drop-shadow-none">
+                    {/* メインコピー（切り替わるので h1 にはしない。h1 は下の固定コピー） */}
+                    <p className="font-ja-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-[1.2] sm:leading-[1.3] tracking-wide text-white lg:text-black drop-shadow-lg lg:drop-shadow-none">
                       {text.line1}
                       <br />
                       <span className="text-hinoki-gold">{text.line2}</span>
-                    </h1>
+                    </p>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* 固定サブコピー - スマホでは非表示または簡略化 */}
-            <div className="hidden sm:block space-y-3 sm:space-y-4 pt-4 sm:pt-6 border-t border-white/30 lg:border-zinc-200">
-              <p className="font-ja-display text-base sm:text-lg md:text-xl text-white lg:text-black tracking-wider drop-shadow-md lg:drop-shadow-none">
-                ＿持ち歩ける森の香り＿
-              </p>
-              <p className="text-xs sm:text-sm md:text-base text-white/90 lg:text-zinc-600 leading-relaxed drop-shadow-md lg:drop-shadow-none">
+            {/* 固定サブコピー - h1（title と揃える）はスマホでも表示、説明文はスマホでは省略 */}
+            <div className="space-y-3 sm:space-y-4 pt-4 sm:pt-6 border-t border-white/30 lg:border-zinc-200">
+              <h1 className="font-ja-display text-base sm:text-lg md:text-xl text-white lg:text-black tracking-wider drop-shadow-md lg:drop-shadow-none">
+                富士ヒノキのフレグランスペーパー
+              </h1>
+              <p className="hidden sm:block text-xs sm:text-sm md:text-base text-white/90 lg:text-zinc-600 leading-relaxed drop-shadow-md lg:drop-shadow-none">
                 富士山麓のフレッシュな富士ヒノキの香りを
                 <br />
                 あなたにも届けたい

@@ -35,7 +35,7 @@ const BLOG_LAYOUT_KEYWORDS = [
 export const metadata: Metadata = {
   title: "ブログ | 富士山・ひのき・アロマ・リラックス情報 | YawnNap",
   description:
-    "YawnNapのブログ。富士山、ひのき、アロマ、リラックス、日本土産に関する情報をお届けします。富士ヒノキの魅力、森林浴の効果、香りのある暮らしのヒント、商品の使い方など、月間1000ビュー以上の高品質なコンテンツを配信しています。",
+    "YawnNapのブログ。富士山、ひのき、アロマ、リラックス、日本土産に関する情報をお届けします。富士ヒノキの魅力、森林浴の効果、香りのある暮らしのヒント、商品の使い方などを配信しています。",
   keywords: BLOG_LAYOUT_KEYWORDS.join(", "),
   openGraph: {
     title: "ブログ | 富士山・ひのき・アロマ・リラックス情報 | YawnNap",

@@ -16,7 +16,7 @@ function getCategoryDescription(category: Category): string {
   const name = category.name;
   return (
     `${name}に関する記事一覧です。富士山麓の富士ヒノキの香りや、ひのきアロマ、フレグランスペーパーYawnNapにまつわる` +
-    `「${name}」にまつわる情報をまとめています。リラックス方法、日本土産、森林浴の効果、ウェルネスなど、` +
+    `「${name}」の情報をまとめています。リラックス方法、日本土産、森林浴の効果、ウェルネスなど、` +
     `日々の深呼吸に役立つコンテンツをお届けします。`
   );
 }
@@ -33,6 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     categoryId: category.id,
   });
   const totalPages = Math.ceil(totalCount / BLOG_PER_PAGE);
+  if (pageNum > totalPages) return {};
   const title = `${category.name}（${pageNum}ページ目） | ブログ | YawnNap`;
   const url = `${SITE_URL}/blog/category/${slug}/page/${pageNum}`;
   return {
@@ -110,7 +111,8 @@ export default async function CategoryPageNum({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
-      <main className="min-h-screen bg-white text-zinc-900 pt-28 pb-20">
+      {/* <main> は app/blog/layout.tsx 側で出力している */}
+      <div className="min-h-screen bg-white text-zinc-900 pt-28 pb-20">
         <div className="container mx-auto px-6 md:px-12 lg:px-24">
           <nav className="mb-8" aria-label="パンくずリスト">
             <ol
@@ -191,19 +193,21 @@ export default async function CategoryPageNum({ params }: Props) {
               >
                 すべて
               </Link>
-              {categories.map((c) => (
-                <Link
-                  key={c.id}
-                  href={`/blog/category/${c.slug}`}
-                  className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                    c.id === category.id
-                      ? "bg-hinoki-brown text-white"
-                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-                  }`}
-                >
-                  {c.name}
-                </Link>
-              ))}
+              {categories
+                .filter((c) => c.slug)
+                .map((c) => (
+                  <Link
+                    key={c.id}
+                    href={`/blog/category/${c.slug}`}
+                    className={`px-4 py-2 rounded-full text-sm transition-colors ${
+                      c.id === category.id
+                        ? "bg-hinoki-brown text-white"
+                        : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                    }`}
+                  >
+                    {c.name}
+                  </Link>
+                ))}
             </nav>
           )}
 
@@ -244,7 +248,7 @@ export default async function CategoryPageNum({ params }: Props) {
             )}
           </nav>
         </div>
-      </main>
+      </div>
     </>
   );
 }

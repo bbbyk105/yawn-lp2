@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { BlogPost } from "./types";
+import { getBlogPostPath } from "./utils";
 
 const SITE_NAME = "YawnNap";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
@@ -79,13 +80,20 @@ function extractKeywordsFromPost(post: BlogPost): string[] {
   return Array.from(keywords).slice(0, 30); // 最大30個のキーワード
 }
 
-export function generateBlogMetadata(post: BlogPost): Metadata {
+/** excerpt は改行入りで入稿されているため、description 用に1行へ整える */
+function toDescription(text: string): string {
+  return text.replace(/\s+/g, " ").trim();
+}
+
+/** @param path 正規URLのパス部分（resolveBlogPost が決めたもの） */
+export function generateBlogMetadata(post: BlogPost, path: string): Metadata {
   const title = post.title;
-  const description =
+  const description = toDescription(
     post.excerpt ||
-    `${title}について。富士山麓のひのきの香りでリラックス。アロマフレグランスペーパーYawnNap。`;
+      `${title}について。富士山麓のひのきの香りでリラックス。アロマフレグランスペーパーYawnNap。`,
+  );
   const ogImage = post.thumbnail?.url || DEFAULT_OG_IMAGE;
-  const url = `${SITE_URL}/blog/${post.slug}`;
+  const url = `${SITE_URL}/blog/${path}`;
   const keywords = extractKeywordsFromPost(post);
 
   return {
@@ -134,16 +142,18 @@ export function generateBlogMetadata(post: BlogPost): Metadata {
   };
 }
 
-export function generateBlogJsonLd(post: BlogPost) {
+/** @param path 正規URLのパス部分（resolveBlogPost が決めたもの） */
+export function generateBlogJsonLd(post: BlogPost, path: string) {
   const keywords = extractKeywordsFromPost(post);
 
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
-    description:
+    description: toDescription(
       post.excerpt ||
-      `${post.title}について。富士山麓のひのきの香りでリラックス。`,
+        `${post.title}について。富士山麓のひのきの香りでリラックス。`,
+    ),
     image: post.thumbnail?.url || DEFAULT_OG_IMAGE,
     datePublished: post.publishedAt,
     dateModified: post.updatedAt,
@@ -155,52 +165,40 @@ export function generateBlogJsonLd(post: BlogPost) {
     publisher: {
       "@type": "Organization",
       name: SITE_NAME,
-      logo: {
-        "@type": "ImageObject",
-        url: `${SITE_URL}/logo.png`,
-      },
+      url: SITE_URL,
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${SITE_URL}/blog/${post.slug}`,
+      "@id": `${SITE_URL}/blog/${path}`,
     },
     keywords: keywords.join(", "),
     articleSection: post.category?.name || "ブログ",
-    wordCount: post.content?.length || 0,
     inLanguage: "ja-JP",
-    about: [
-      {
-        "@type": "Thing",
-        name: "富士山",
-      },
-      {
-        "@type": "Thing",
-        name: "ひのき",
-      },
-      {
-        "@type": "Thing",
-        name: "アロマ",
-      },
-      {
-        "@type": "Thing",
-        name: "リラックス",
-      },
-      {
-        "@type": "Thing",
-        name: "日本土産",
-      },
-      {
-        "@type": "Thing",
-        name: "ひのきフレグランス",
-      },
-    ],
-    // Article構造化データも追加
-    articleBody: post.content || post.excerpt,
-    mentions: keywords.slice(0, 10).map((keyword) => ({
-      "@type": "Thing",
-      name: keyword,
-    })),
   };
+}
+
+/** トップページ用: ブランド（Organization）とサイト（WebSite） */
+export function generateSiteJsonLd() {
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      alternateName: "ヨーンナップ",
+      url: SITE_URL,
+      sameAs: ["https://www.instagram.com/yawn.nap_", "https://yawnnap.shop"],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      inLanguage: "ja-JP",
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+  ];
 }
 
 export function generateBlogListJsonLd(posts: BlogPost[]) {
@@ -215,10 +213,10 @@ export function generateBlogListJsonLd(posts: BlogPost[]) {
     blogPost: posts.map((post) => ({
       "@type": "BlogPosting",
       headline: post.title,
-      description: post.excerpt,
+      description: post.excerpt && toDescription(post.excerpt),
       image: post.thumbnail?.url,
       datePublished: post.publishedAt,
-      url: `${SITE_URL}/blog/${post.slug}`,
+      url: `${SITE_URL}/blog/${getBlogPostPath(post)}`,
       keywords: extractKeywordsFromPost(post).join(", "),
     })),
   };

@@ -4,13 +4,13 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import BlogCard from "../ui/BlogCard";
-import type { BlogPost } from "@/lib/types";
+import type { BlogCardPost } from "@/lib/types";
 import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
 interface BlogSectionProps {
-  posts: BlogPost[];
+  posts: BlogCardPost[];
 }
 
 export default function BlogSection({ posts }: BlogSectionProps) {
@@ -80,7 +80,7 @@ export default function BlogSection({ posts }: BlogSectionProps) {
           <p className="text-sm md:text-base text-zinc-600 max-w-xl mx-auto leading-relaxed">
             富士山麓の自然、富士ヒノキの魅力、
             <br />
-            日々のリラックス方法について綴りります。
+            日々のリラックス方法について綴ります。
           </p>
         </div>
 

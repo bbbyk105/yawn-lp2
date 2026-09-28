@@ -5,7 +5,7 @@ import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { formatDate } from "@/lib/utils";
-import type { BlogPost } from "@/lib/types";
+import type { BlogCardPost, BlogPost } from "@/lib/types";
 import BlogCard from "../ui/BlogCard";
 import {
   Calendar,
@@ -21,7 +21,9 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface BlogArticleProps {
   post: BlogPost;
-  relatedPosts: BlogPost[];
+  /** 正規URLのパス部分（resolveBlogPost が決めたもの） */
+  path: string;
+  relatedPosts: BlogCardPost[];
 }
 
 interface TocItem {
@@ -30,7 +32,12 @@ interface TocItem {
   level: number;
 }
 
-export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
+export default function BlogArticle({
+  post,
+  path,
+  relatedPosts,
+}: BlogArticleProps) {
+  const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${path}`;
   const articleRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [activeId, setActiveId] = useState<string>("");
@@ -178,12 +185,8 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
 
   // リンクをコピー
   const copyLink = async () => {
-    const url = `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${
-      post.slug || post.id
-    }`;
-
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(postUrl);
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
@@ -246,15 +249,20 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
             </ol>
           </nav>
 
-          {/* カテゴリー */}
-          {post.category && (
-            <Link
-              href={`/blog/category/${post.category.slug}`}
-              className="inline-block mb-4 px-3 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded hover:bg-blue-100 transition-colors"
-            >
-              {post.category.name}
-            </Link>
-          )}
+          {/* カテゴリー（slug 未設定だとカテゴリページが無いのでリンクにしない） */}
+          {post.category &&
+            (post.category.slug ? (
+              <Link
+                href={`/blog/category/${post.category.slug}`}
+                className="inline-block mb-4 px-3 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded hover:bg-blue-100 transition-colors"
+              >
+                {post.category.name}
+              </Link>
+            ) : (
+              <span className="inline-block mb-4 px-3 py-1 bg-blue-50 text-blue-600 text-xs font-medium rounded">
+                {post.category.name}
+              </span>
+            ))}
 
           {/* タイトル */}
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-zinc-900 mb-4 leading-tight">
@@ -374,11 +382,7 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
                   <a
                     href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
                       post.title
-                    )}&url=${encodeURIComponent(
-                      `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${
-                        post.slug || post.id
-                      }`
-                    )}`}
+                    )}&url=${encodeURIComponent(postUrl)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center w-10 h-10 rounded-lg bg-zinc-100 text-zinc-600 hover:bg-[#1DA1F2] hover:text-white transition-all relative group"
@@ -399,9 +403,7 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
                   {/* Facebook */}
                   <a
                     href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                      `${process.env.NEXT_PUBLIC_SITE_URL}/blog/${
-                        post.slug || post.id
-                      }`
+                      postUrl
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -423,9 +425,7 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
                   {/* LINE */}
                   <a
                     href={`https://line.me/R/msg/text/?${encodeURIComponent(
-                      `${post.title} ${process.env.NEXT_PUBLIC_SITE_URL}/blog/${
-                        post.slug || post.id
-                      }`
+                      `${post.title} ${postUrl}`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -452,9 +452,9 @@ export default function BlogArticle({ post, relatedPosts }: BlogArticleProps) {
           {toc.length > 0 && (
             <aside className="hidden lg:block w-64 shrink-0">
               <div className="sticky top-24">
-                <h2 className="text-sm font-bold text-zinc-900 mb-4 px-3">
+                <p className="text-sm font-bold text-zinc-900 mb-4 px-3">
                   目次
-                </h2>
+                </p>
                 <nav>
                   <ul className="space-y-1 text-sm">
                     {toc.map((item) => (

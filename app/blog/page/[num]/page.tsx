@@ -60,14 +60,15 @@ export default async function BlogPageNum({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="min-h-screen bg-white">
+      {/* <main> は app/blog/layout.tsx 側で出力している */}
+      <div className="min-h-screen bg-white">
         <BlogList
           initialPosts={posts}
           totalCount={totalCount}
           categories={categories}
           currentPage={pageNum}
         />
-      </main>
+      </div>
     </>
   );
 }

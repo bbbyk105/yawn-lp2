@@ -1,6 +1,5 @@
-"use client";
-
-import { smoothScrollTo } from "@/lib/utils";
+import Link from "next/link";
+import SectionLink from "@/components/navigation/SectionLink";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -15,9 +14,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-12">
           {/* ブランド情報 */}
           <div className="space-y-4 lg:col-span-2">
-            <h3 className="font-en-display text-3xl md:text-4xl text-hinoki-gold tracking-tight">
+            <p className="font-en-display text-3xl md:text-4xl text-hinoki-gold tracking-tight">
               YawnNap
-            </h3>
+            </p>
             <p className="font-ja-display text-sm md:text-base text-zinc-600 leading-relaxed max-w-md">
               ＿持ち歩ける深呼吸＿
               <br />
@@ -48,9 +47,9 @@ export default function Footer() {
 
           {/* リンク: Product */}
           <div className="space-y-4">
-            <h4 className="font-ja-display text-base md:text-lg tracking-wide text-black">
+            <p className="font-ja-display text-base md:text-lg tracking-wide text-black">
               Product
-            </h4>
+            </p>
             <ul className="space-y-3 text-xs md:text-sm text-zinc-600">
               <li>
                 <a
@@ -76,53 +75,53 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <button
-                  onClick={() => smoothScrollTo("products")}
+                <SectionLink
+                  sectionId="products"
                   className="hover:text-hinoki-gold transition-colors duration-300"
                 >
                   3つのラインナップ
-                </button>
+                </SectionLink>
               </li>
               <li>
-                <button
-                  onClick={() => smoothScrollTo("how-to-use")}
+                <SectionLink
+                  sectionId="how-to-use"
                   className="hover:text-hinoki-gold transition-colors duration-300"
                 >
                   使い方
-                </button>
+                </SectionLink>
               </li>
             </ul>
           </div>
 
           {/* リンク: About */}
           <div className="space-y-4">
-            <h4 className="font-ja-display text-base md:text-lg tracking-wide text-black">
+            <p className="font-ja-display text-base md:text-lg tracking-wide text-black">
               About
-            </h4>
+            </p>
             <ul className="space-y-3 text-xs md:text-sm text-zinc-600">
               <li>
-                <button
-                  onClick={() => smoothScrollTo("brand-story")}
+                <SectionLink
+                  sectionId="brand-story"
                   className="hover:text-hinoki-gold transition-colors duration-300"
                 >
                   ブランドストーリー
-                </button>
+                </SectionLink>
               </li>
               <li>
-                <button
-                  onClick={() => smoothScrollTo("hinoki-story")}
+                <SectionLink
+                  sectionId="hinoki-story"
                   className="hover:text-hinoki-gold transition-colors duration-300"
                 >
                   富士ヒノキについて
-                </button>
+                </SectionLink>
               </li>
               <li>
-                <button
-                  onClick={() => smoothScrollTo("blog")}
+                <Link
+                  href="/blog"
                   className="hover:text-hinoki-gold transition-colors duration-300"
                 >
                   ブログ
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
@@ -136,24 +135,24 @@ export default function Footer() {
           <p>© {currentYear} YawnNap. All rights reserved.</p>
 
           <div className="flex items-center gap-6">
-            <a
+            <Link
               href="/privacy"
               className="hover:text-hinoki-gold transition-colors duration-300"
             >
               プライバシーポリシー
-            </a>
-            <a
+            </Link>
+            <Link
               href="/terms"
               className="hover:text-hinoki-gold transition-colors duration-300"
             >
               特定商取引法
-            </a>
-            <a
+            </Link>
+            <Link
               href="/contact"
               className="hover:text-hinoki-gold transition-colors duration-300"
             >
               お問い合わせ
-            </a>
+            </Link>
           </div>
         </div>
 

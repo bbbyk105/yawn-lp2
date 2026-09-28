@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { cn, smoothScrollTo } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
+import SectionLink from "./SectionLink";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -44,12 +45,12 @@ export default function Header() {
               { id: "hinoki-story", label: "Hinoki" },
             ].map((item) => (
               <li key={item.id}>
-                <button
-                  onClick={() => smoothScrollTo(item.id)}
+                <SectionLink
+                  sectionId={item.id}
                   className="font-en-accent text-sm tracking-wider uppercase text-zinc-600 hover:text-hinoki-gold transition-colors duration-300"
                 >
                   {item.label}
-                </button>
+                </SectionLink>
               </li>
             ))}
             <li>
@@ -111,15 +112,13 @@ export default function Header() {
                 { id: "hinoki-story", label: "Hinoki" },
               ].map((item) => (
                 <li key={item.id}>
-                  <button
-                    onClick={() => {
-                      smoothScrollTo(item.id);
-                      setIsMobileMenuOpen(false);
-                    }}
+                  <SectionLink
+                    sectionId={item.id}
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className="block w-full text-left font-en-accent text-sm tracking-wider uppercase text-zinc-600 hover:text-hinoki-gold transition-colors duration-300"
                   >
                     {item.label}
-                  </button>
+                  </SectionLink>
                 </li>
               ))}
               <li>

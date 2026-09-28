@@ -35,7 +35,7 @@ const BLOG_KEYWORDS = [
 export const metadata: Metadata = {
   title: "ブログ | 富士山・ひのき・アロマ・リラックス情報 | YawnNap",
   description:
-    "富士山麓の自然、ヒノキの魅力、森林浴の効果について綴ります。富士山観光、ひのきの香り、アロマ効果、リラックス方法、日本土産情報など、月間1000ビュー以上の高品質なコンテンツをお届けします。",
+    "富士山麓の自然、ヒノキの魅力、森林浴の効果について綴ります。富士山観光、ひのきの香り、アロマ効果、リラックス方法、日本土産情報などをお届けします。",
   keywords: BLOG_KEYWORDS.join(", "),
   openGraph: {
     title: "ブログ | 富士山・ひのき・アロマ・リラックス情報 | YawnNap",
@@ -83,14 +83,15 @@ export default async function BlogPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className="min-h-screen bg-white">
+      {/* <main> は app/blog/layout.tsx 側で出力している */}
+      <div className="min-h-screen bg-white">
         <BlogList
           initialPosts={posts}
           totalCount={totalCount}
           categories={categories}
           currentPage={1}
         />
-      </main>
+      </div>
     </>
   );
 }

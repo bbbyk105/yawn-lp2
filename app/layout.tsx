@@ -60,8 +60,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title:
-    "YawnNap - 富士ヒノキのフレグランスペーパー | ポケットサイズの森林浴 | 富士山・ひのき・アロマ",
+  // h1（HeroSection）と揃え、狙う語を前方に。キーワードの羅列はしない
+  title: "富士ヒノキのフレグランスペーパー | ポケットサイズの森林浴 YawnNap",
   description:
     "ほんの少しの深呼吸で、今日が変わる。富士山麓の富士ヒノキの香りをポケットに入れて持ち歩ける、フレグランスペーパーYawnNap。富士山観光のお土産としても人気。ひのきのアロマでリラックス、日本土産として最適なアイテムです。",
   keywords: MAIN_SEO_KEYWORDS.join(", "),

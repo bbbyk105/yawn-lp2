@@ -1,12 +1,10 @@
-"use client";
-
 import Link from "next/link";
 import BlogCard from "../ui/BlogCard";
-import type { BlogPost, Category } from "@/lib/types";
+import type { BlogCardPost, Category } from "@/lib/types";
 import { BLOG_PER_PAGE } from "@/lib/constants";
 
 interface BlogListProps {
-  initialPosts: BlogPost[];
+  initialPosts: BlogCardPost[];
   totalCount: number;
   categories: Category[];
   /** 現在のページ（1始まり）。省略時は1 */
@@ -18,11 +16,14 @@ interface BlogListProps {
 export default function BlogList({
   initialPosts,
   totalCount,
+  categories,
   currentPage = 1,
   categorySlug,
 }: BlogListProps) {
   const totalPages = Math.ceil(totalCount / BLOG_PER_PAGE);
   const basePath = categorySlug ? `/blog/category/${categorySlug}` : "/blog";
+  // slug 未設定のカテゴリはページが存在しないので導線に出さない
+  const linkableCategories = categories.filter((c) => c.slug);
 
   return (
     <div className="min-h-screen pt-32 pb-20 md:pt-40 md:pb-28">
@@ -40,6 +41,24 @@ export default function BlogList({
             日々のリラックス方法について綴ります。
           </p>
         </div>
+
+        {/* カテゴリ導線（URLを持つ） */}
+        {linkableCategories.length > 0 && (
+          <nav
+            className="mb-12 flex flex-wrap justify-center gap-3"
+            aria-label="カテゴリ"
+          >
+            {linkableCategories.map((c) => (
+              <Link
+                key={c.id}
+                href={`/blog/category/${c.slug}`}
+                className="px-4 py-2 rounded-full text-sm bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors"
+              >
+                {c.name}
+              </Link>
+            ))}
+          </nav>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {initialPosts.map((post) => (

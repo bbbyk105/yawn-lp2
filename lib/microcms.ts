@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { cache } from "react";
 import { createClient } from "microcms-js-sdk";
 import type { BlogPost, Category } from "./types";
 
@@ -93,39 +94,68 @@ export const getBlogPostBySlug = async (slugOrId: string) => {
   }
 };
 
+/**
+ * URLパラメータ（slug または id）から記事を引き、正規URLのパスを決める。
+ * - slug でアクセス → そのパスが正規
+ * - id でアクセスし、その記事の slug がこの記事自身を指す → slug のURLへリダイレクト
+ * - slug 未入力、または slug が他の記事と重複している → id のURLが正規
+ *   （重複 slug のままリダイレクトすると別記事に飛ばしてしまうため）
+ */
+export const resolveBlogPost = cache(async (param: string) => {
+  const post = await getBlogPostBySlug(param);
+  if (!post) return null;
+
+  if (post.slug === param) {
+    return { post, path: param, shouldRedirect: false };
+  }
+
+  if (post.slug) {
+    const owner = await getBlogPostBySlug(post.slug);
+    if (owner?.id === post.id) {
+      return { post, path: post.slug, shouldRedirect: true };
+    }
+  }
+
+  return { post, path: post.id, shouldRedirect: post.id !== param };
+});
+
 const BLOG_FETCH_LIMIT = 100;
 
-// 全ブログ記事のslug取得（静的生成・sitemap用・件数制限なし）
-export const getAllBlogSlugs = async (): Promise<string[]> => {
+// 全ブログ記事のパスと更新日時（sitemap用・件数制限なし）
+// slug が重複している記事は、resolveBlogPost と同じく2件目以降を id のURLで載せる
+// （どちらも並び順指定なしの取得なので、先に出てくる記事が slug の持ち主になる）
+export const getAllBlogSitemapEntries = async (): Promise<
+  { path: string; updatedAt: string }[]
+> => {
   try {
-    const allSlugs: string[] = [];
+    const entries = new Map<string, string>();
     let offset = 0;
 
     while (true) {
       const data = await client.get<MicroCMSResponse<BlogPost>>({
         endpoint: "blogs",
         queries: {
-          fields: "id,slug",
+          fields: "id,slug,updatedAt",
           limit: BLOG_FETCH_LIMIT,
           offset,
         },
       });
 
-      const slugs = data.contents.map((post) => post.slug || post.id);
-      allSlugs.push(...slugs);
+      for (const post of data.contents) {
+        const path =
+          post.slug && !entries.has(post.slug) ? post.slug : post.id;
+        entries.set(path, post.updatedAt);
+      }
 
-      if (
-        data.contents.length < BLOG_FETCH_LIMIT ||
-        allSlugs.length >= data.totalCount
-      ) {
+      offset += data.contents.length;
+      if (data.contents.length < BLOG_FETCH_LIMIT || offset >= data.totalCount) {
         break;
       }
-      offset += BLOG_FETCH_LIMIT;
     }
 
-    return allSlugs;
+    return Array.from(entries, ([path, updatedAt]) => ({ path, updatedAt }));
   } catch (error) {
-    console.error("Error fetching blog slugs:", error);
+    console.error("Error fetching blog sitemap entries:", error);
     return [];
   }
 };
@@ -144,7 +174,7 @@ export const getBlogSlugsForStaticParams = async (
         orders: "-publishedAt",
       },
     });
-    return data.contents.map((post) => post.slug || post.id);
+    return Array.from(new Set(data.contents.map((post) => post.slug || post.id)));
   } catch (error) {
     console.error("Error fetching blog slugs for static params:", error);
     return [];

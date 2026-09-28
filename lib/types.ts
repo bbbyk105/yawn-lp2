@@ -9,20 +9,24 @@ export interface BlogPost {
     width: number;
     height: number;
   };
-  category: {
-    id: string;
-    name: string;
-    slug: string;
-  };
+  category?: Category;
   publishedAt: string;
   updatedAt: string;
-  slug: string;
+  /** microCMS で未入力の記事があるため optional（その場合は id をURLに使う） */
+  slug?: string;
 }
+
+/** 一覧カード表示に必要なフィールドだけ（本文をクライアントへ送らないため） */
+export type BlogCardPost = Pick<
+  BlogPost,
+  "id" | "slug" | "title" | "excerpt" | "thumbnail" | "category" | "publishedAt"
+>;
 
 export interface Category {
   id: string;
   name: string;
-  slug: string;
+  /** microCMS のカテゴリAPIに slug フィールドが無い場合は undefined。カテゴリページへのリンクは slug がある時だけ出す */
+  slug?: string;
 }
 
 // ギャラリー画像型定義
