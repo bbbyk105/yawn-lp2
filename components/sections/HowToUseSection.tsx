@@ -1,10 +1,4 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import ScrollAnimate from "@/components/animations/ScrollAnimate";
 
 const steps = [
   {
@@ -28,47 +22,8 @@ const steps = [
 ];
 
 export default function HowToUseSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 60,
-        duration: 1.5,
-        scrollTrigger: {
-          trigger: titleRef.current,
-          start: "top 80%",
-          end: "top 50%",
-          scrub: 1,
-        },
-      });
-
-      stepsRef.current.forEach((step) => {
-        if (!step) return;
-
-        gsap.from(step, {
-          opacity: 0,
-          y: 60,
-          duration: 1.2,
-          scrollTrigger: {
-            trigger: step,
-            start: "top 80%",
-            end: "top 50%",
-            scrub: 1,
-          },
-        });
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
       className="relative min-h-screen bg-white py-20 md:py-28 overflow-hidden"
       id="how-to-use"
     >
@@ -77,7 +32,12 @@ export default function HowToUseSection() {
 
       <div className="relative z-10 container mx-auto px-6 md:px-12 lg:px-24">
         {/* セクションヘッダー */}
-        <div ref={titleRef} className="mb-16 md:mb-20 text-center space-y-4">
+        <ScrollAnimate
+          from={{ opacity: 0, y: 60, duration: 1.5 }}
+          start="top 80%"
+          end="top 50%"
+          className="mb-16 md:mb-20 text-center space-y-4"
+        >
           <p className="font-en-accent text-[10px] md:text-xs tracking-[0.4em] text-hinoki-brown uppercase">
             How to Use
           </p>
@@ -89,16 +49,16 @@ export default function HowToUseSection() {
             <br />
             あなたのペースで森を感じてください。
           </p>
-        </div>
+        </ScrollAnimate>
 
         {/* ステップカード */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto mb-16">
-          {steps.map((step, index) => (
-            <div
+          {steps.map((step) => (
+            <ScrollAnimate
               key={step.number}
-              ref={(el) => {
-                stepsRef.current[index] = el;
-              }}
+              from={{ opacity: 0, y: 60, duration: 1.2 }}
+              start="top 80%"
+              end="top 50%"
               className="group relative"
             >
               {/* カード */}
@@ -134,7 +94,7 @@ export default function HowToUseSection() {
                 {/* ホバー時の装飾ライン */}
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-hinoki-gold to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-b-2xl" />
               </div>
-            </div>
+            </ScrollAnimate>
           ))}
         </div>
 

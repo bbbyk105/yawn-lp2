@@ -1,10 +1,7 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import type { CSSProperties } from "react";
+import ScrollAnimate from "@/components/animations/ScrollAnimate";
+import ArrowRightIcon from "@/components/ui/ArrowRightIcon";
+import { SHOP_URL } from "@/lib/site";
 
 const PARTICLE_POSITIONS = [
   { left: 15, top: 65 },
@@ -18,70 +15,25 @@ const PARTICLE_POSITIONS = [
 ];
 
 export default function CTASection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLAnchorElement>(null);
-  const particlesRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(contentRef.current, {
-        opacity: 0,
-        y: 80,
-        duration: 1.5,
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          end: "top 30%",
-          scrub: 1,
-        },
-      });
-
-      gsap.to(buttonRef.current, {
-        scale: 1.05,
-        duration: 1.5,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-
-      const particles = particlesRef.current?.querySelectorAll(".particle");
-      if (particles) {
-        particles.forEach((particle, index) => {
-          gsap.to(particle, {
-            y: -80,
-            x: index % 2 === 0 ? 40 : -40,
-            opacity: 0,
-            duration: 3 + index * 0.5,
-            repeat: -1,
-            ease: "power1.inOut",
-          });
-        });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-linear-to-b from-white via-zinc-50 to-white"
       id="cta"
     >
-      {/* 浮遊するパーティクル */}
-      <div
-        ref={particlesRef}
-        className="absolute inset-0 overflow-hidden pointer-events-none"
-      >
+      {/* 浮遊するパーティクル（CSS アニメーション。粒ごとに速さと左右を変える） */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {PARTICLE_POSITIONS.map((pos, i) => (
           <div
             key={i}
-            className="particle absolute w-1.5 h-1.5 bg-hinoki-gold rounded-full opacity-20 blur-sm"
-            style={{
-              left: `${pos.left}%`,
-              top: `${pos.top}%`,
-            }}
+            className="absolute w-1.5 h-1.5 bg-hinoki-gold rounded-full opacity-20 blur-sm animate-particle-float"
+            style={
+              {
+                left: `${pos.left}%`,
+                top: `${pos.top}%`,
+                animationDuration: `${3 + i * 0.5}s`,
+                "--particle-x": i % 2 === 0 ? "40px" : "-40px",
+              } as CSSProperties
+            }
           />
         ))}
       </div>
@@ -92,8 +44,11 @@ export default function CTASection() {
       </div>
 
       {/* コンテンツ */}
-      <div
-        ref={contentRef}
+      <ScrollAnimate
+        from={{ opacity: 0, y: 80, duration: 1.5 }}
+        trigger="section"
+        start="top 70%"
+        end="top 30%"
         className="relative z-10 text-center px-6 space-y-10 max-w-3xl mx-auto"
       >
         {/* キャッチコピー */}
@@ -115,29 +70,19 @@ export default function CTASection() {
           </p>
         </div>
 
-        {/* CTAボタン */}
+        {/* CTAボタン（ゆっくり脈打つ。CSS アニメーション） */}
         <div className="pt-6 space-y-4">
           <a
-            ref={buttonRef}
-            href="https://yawnnap.shop"
+            href={SHOP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-3 px-10 md:px-12 py-4 bg-black text-white font-en-accent text-sm tracking-[0.3em] uppercase rounded-full transition-all duration-300 hover:bg-hinoki-gold hover:text-black hover:gap-4 hover:shadow-lg"
+            className="group inline-flex items-center gap-3 px-10 md:px-12 py-4 bg-black text-white font-en-accent text-sm tracking-[0.3em] uppercase rounded-full transition-all duration-300 hover:bg-hinoki-gold hover:text-black hover:gap-4 hover:shadow-lg animate-pulse-scale"
           >
             <span className="font-bold">商品を見る</span>
-            <svg
+            <ArrowRightIcon
               className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M17 8l4 4m0 0l-4 4m4-4H3"
-              />
-            </svg>
+              strokeWidth={2.5}
+            />
           </a>
 
           <p className="text-xs md:text-sm text-zinc-500">
@@ -165,7 +110,7 @@ export default function CTASection() {
             <div className="w-10 h-px bg-linear-to-l from-transparent to-hinoki-gold" />
           </div>
         </div>
-      </div>
+      </ScrollAnimate>
     </section>
   );
 }

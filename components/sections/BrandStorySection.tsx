@@ -1,76 +1,39 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
+import ScrollAnimate from "@/components/animations/ScrollAnimate";
 
-gsap.registerPlugin(ScrollTrigger);
+/** ストーリーの各段落が下からふわっと出る */
+const TEXT_REVEAL = {
+  as: "p",
+  from: { opacity: 0, y: 60, duration: 1.5 },
+  start: "top 75%",
+  end: "top 40%",
+} as const;
 
 export default function BrandStorySection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const textRefs = useRef<(HTMLParagraphElement | null)[]>([]);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      // パララックスの範囲を調整（少なめに）
-      gsap.to(imageRef.current, {
-        y: 80, // 150 → 80 に変更
-        scale: 1.05, // 1.08 → 1.05 に変更
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.5,
-        },
-      });
-
-      textRefs.current.forEach((text) => {
-        if (!text) return;
-
-        gsap.from(text, {
-          opacity: 0,
-          y: 60,
-          duration: 1.5,
-          scrollTrigger: {
-            trigger: text,
-            start: "top 75%",
-            end: "top 40%",
-            scrub: 1,
-          },
-        });
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
       className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white"
       id="brand-story"
     >
-      {/* 背景画像 - パララックス用の余白を追加 */}
-      <div
-        ref={imageRef}
+      {/* 背景画像 - パララックス用に上下に余分な高さを確保 */}
+      <ScrollAnimate
+        to={{ y: 80, scale: 1.05 }}
+        trigger="section"
+        start="top bottom"
+        end="bottom top"
+        scrub={1.5}
         className="absolute inset-0"
-        style={{
-          top: "-10%",
-          height: "120%", // 上下に余分な高さを確保
-        }}
+        style={{ top: "-10%", height: "120%" }}
       >
         <Image
           src="/images/gallery/fuji-02.jpg"
           alt="富士山麓の森"
           fill
           className="object-cover"
-          quality={90}
         />
         {/* 白いオーバーレイ */}
         <div className="absolute inset-0 bg-white/85" />
-      </div>
+      </ScrollAnimate>
 
       {/* コンテンツ */}
       <div className="relative z-10 container mx-auto px-6 md:px-12 lg:px-24 py-20">
@@ -87,10 +50,8 @@ export default function BrandStorySection() {
 
           {/* ストーリーテキスト */}
           <div className="space-y-10 md:space-y-12">
-            <p
-              ref={(el) => {
-                textRefs.current[0] = el;
-              }}
+            <ScrollAnimate
+              {...TEXT_REVEAL}
               className="text-xl md:text-2xl text-black leading-relaxed text-center font-ja-display"
             >
               富士山のふもとで育まれた
@@ -100,39 +61,33 @@ export default function BrandStorySection() {
               を、
               <br className="hidden md:block" />
               で日常に安らぎを届けたい。
-            </p>
+            </ScrollAnimate>
 
             <div className="h-px bg-linear-to-r from-transparent via-hinoki-gold to-transparent" />
 
-            <p
-              ref={(el) => {
-                textRefs.current[1] = el;
-              }}
+            <ScrollAnimate
+              {...TEXT_REVEAL}
               className="text-base md:text-lg text-zinc-700 leading-relaxed max-w-3xl mx-auto"
             >
               ヒノキは、日本書紀にもスサノオノミコトが宮殿に用いるよう教えたと記されるほど、
               古くから日本で親しまれてきた木です。
               神社や寺院の建築材としてはもちろん、ヒノキ風呂などにも使用され
               暮らしの中で心を整える素材として大切にされてきました。
-            </p>
+            </ScrollAnimate>
 
-            <p
-              ref={(el) => {
-                textRefs.current[2] = el;
-              }}
+            <ScrollAnimate
+              {...TEXT_REVEAL}
               className="text-base md:text-lg text-zinc-700 leading-relaxed max-w-3xl mx-auto"
             >
               忙しさの中で、心がざわつきやすくなっているときこそ、
               ふとした瞬間に、森を歩くようなヒノキの香りが
               そっと気持ちを入れ替えてくれたら——。
-            </p>
+            </ScrollAnimate>
 
             <div className="h-px bg-linear-to-r from-transparent via-hinoki-gold to-transparent" />
 
-            <p
-              ref={(el) => {
-                textRefs.current[3] = el;
-              }}
+            <ScrollAnimate
+              {...TEXT_REVEAL}
               className="text-xl md:text-2xl text-black leading-relaxed text-center font-ja-display"
             >
               森の静けさを、いつでも持ち歩けたら。
@@ -142,22 +97,18 @@ export default function BrandStorySection() {
               <span className="text-hinoki-gold text-2xl md:text-3xl">
                 このフレグランスペーパーは生まれました。
               </span>
-            </p>
+            </ScrollAnimate>
 
             <div className="pt-8 text-center space-y-6">
-              <p
-                ref={(el) => {
-                  textRefs.current[4] = el;
-                }}
+              <ScrollAnimate
+                {...TEXT_REVEAL}
                 className="text-2xl md:text-3xl font-ja-display tracking-wide text-black"
               >
                 もう、今日は森へ行きたい！
-              </p>
+              </ScrollAnimate>
 
-              <p
-                ref={(el) => {
-                  textRefs.current[5] = el;
-                }}
+              <ScrollAnimate
+                {...TEXT_REVEAL}
                 className="text-base md:text-lg text-zinc-700 leading-relaxed max-w-2xl mx-auto"
               >
                 そう思ってすぐには森にはいけないけれど、
@@ -167,7 +118,7 @@ export default function BrandStorySection() {
                 <span className="text-hinoki-gold font-bold text-lg md:text-xl">
                   その香りでリラックス。あなたをやさしく整えてくれるはず。
                 </span>
-              </p>
+              </ScrollAnimate>
             </div>
           </div>
         </div>

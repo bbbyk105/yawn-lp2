@@ -1,7 +1,6 @@
 import { MetadataRoute } from "next";
 import { getAllBlogSitemapEntries, getCategories } from "@/lib/microcms";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
+import { SITE_URL } from "@/lib/site";
 
 /** サイトマップの最大URL数（Google推奨は50,000。分割する場合はこの値以下に） */
 const SITEMAP_URL_LIMIT = 50000;

@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 import { getBlogPosts, getCategories } from "@/lib/microcms";
 import { generateBlogListJsonLd } from "@/lib/seo";
 import BlogList from "@/components/blog/BlogList";
+import JsonLd from "@/components/seo/JsonLd";
 import { BLOG_PER_PAGE } from "@/lib/constants";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
+import { SITE_URL } from "@/lib/site";
+import { parsePageNumber } from "@/lib/utils";
 
 type Props = {
   params: Promise<{ num: string }>;
@@ -13,8 +14,8 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { num } = await params;
-  const pageNum = parseInt(num, 10);
-  if (Number.isNaN(pageNum) || pageNum < 2) return {};
+  const pageNum = parsePageNumber(num);
+  if (!pageNum) return {};
   const { totalCount } = await getBlogPosts({ limit: 1, offset: 0 });
   const totalPages = Math.ceil(totalCount / BLOG_PER_PAGE);
   if (pageNum > totalPages) return {};
@@ -38,28 +39,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export const revalidate = 60;
 
+// ビルド時には作らず、初めて開かれたときに生成して60秒キャッシュする（ISR）。
+// これが無いとアクセスのたびに microCMS へ問い合わせてページを作っていた
+export async function generateStaticParams() {
+  return [];
+}
+
 export default async function BlogPageNum({ params }: Props) {
   const { num } = await params;
-  const pageNum = parseInt(num, 10);
-  if (Number.isNaN(pageNum) || pageNum < 2) notFound();
+  const pageNum = parsePageNumber(num);
+  if (!pageNum) notFound();
 
   const offset = (pageNum - 1) * BLOG_PER_PAGE;
-  const { posts, totalCount } = await getBlogPosts({
-    limit: BLOG_PER_PAGE,
-    offset,
-  });
+  const [{ posts, totalCount }, categories] = await Promise.all([
+    getBlogPosts({ limit: BLOG_PER_PAGE, offset }),
+    getCategories(),
+  ]);
   const totalPages = Math.ceil(totalCount / BLOG_PER_PAGE);
   if (pageNum > totalPages) notFound();
 
-  const categories = await getCategories();
-  const jsonLd = generateBlogListJsonLd(posts);
-
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={generateBlogListJsonLd(posts)} />
       {/* <main> は app/blog/layout.tsx 側で出力している */}
       <div className="min-h-screen bg-white">
         <BlogList

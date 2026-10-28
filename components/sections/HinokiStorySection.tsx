@@ -1,11 +1,5 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-
-gsap.registerPlugin(ScrollTrigger);
+import ScrollAnimate from "@/components/animations/ScrollAnimate";
 
 const benefits = [
   {
@@ -31,73 +25,8 @@ const benefits = [
 ];
 
 export default function HinokiStorySection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-  const benefitsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(titleRef.current, {
-        opacity: 0,
-        y: 80,
-        duration: 1.5,
-        scrollTrigger: {
-          trigger: titleRef.current,
-          start: "top 80%",
-          end: "top 40%",
-          scrub: 1,
-        },
-      });
-
-      gsap.to(imageRef.current, {
-        y: -80,
-        scrollTrigger: {
-          trigger: imageRef.current,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1.5,
-        },
-      });
-
-      gsap.from(textRef.current?.querySelectorAll("p") || [], {
-        opacity: 0,
-        y: 50,
-        stagger: 0.2,
-        duration: 1,
-        scrollTrigger: {
-          trigger: textRef.current,
-          start: "top 75%",
-          end: "top 40%",
-          scrub: 1,
-        },
-      });
-
-      const cards = benefitsRef.current?.querySelectorAll(".benefit-card");
-      if (cards) {
-        cards.forEach((card) => {
-          gsap.from(card, {
-            opacity: 0,
-            y: 60,
-            duration: 1,
-            scrollTrigger: {
-              trigger: card,
-              start: "top 85%",
-              end: "top 50%",
-              scrub: 1,
-            },
-          });
-        });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
       className="relative min-h-screen bg-linear-to-b from-white via-zinc-50 to-white py-20 md:py-28 overflow-hidden"
       id="hinoki-story"
     >
@@ -106,7 +35,12 @@ export default function HinokiStorySection() {
 
       <div className="relative z-10 container mx-auto px-6 md:px-12 lg:px-24">
         {/* セクションヘッダー */}
-        <div ref={titleRef} className="mb-20 text-center space-y-4">
+        <ScrollAnimate
+          from={{ opacity: 0, y: 80, duration: 1.5 }}
+          start="top 80%"
+          end="top 40%"
+          className="mb-20 text-center space-y-4"
+        >
           <p className="font-en-accent text-[10px] md:text-xs tracking-[0.4em] text-hinoki-brown uppercase">
             100% Mt. Fuji Hinoki
           </p>
@@ -115,12 +49,18 @@ export default function HinokiStorySection() {
             <br />
             <span className="text-hinoki-gold">爽やかな森の香り。</span>
           </h2>
-        </div>
+        </ScrollAnimate>
 
         {/* メインコンテンツ */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center mb-20">
-          {/* 左: 画像 */}
-          <div ref={imageRef} className="relative">
+          {/* 左: 画像（パララックス） */}
+          <ScrollAnimate
+            to={{ y: -80 }}
+            start="top bottom"
+            end="bottom top"
+            scrub={1.5}
+            className="relative"
+          >
             <div className="relative aspect-4/5 rounded-2xl overflow-hidden shadow-xl">
               <Image
                 src="/images/gallery/hinoki-02.jpg"
@@ -142,10 +82,16 @@ export default function HinokiStorySection() {
                 </p>
               </div>
             </div>
-          </div>
+          </ScrollAnimate>
 
           {/* 右: テキスト */}
-          <div ref={textRef} className="space-y-6">
+          <ScrollAnimate
+            targets="p"
+            from={{ opacity: 0, y: 50, stagger: 0.2, duration: 1 }}
+            start="top 75%"
+            end="top 40%"
+            className="space-y-6"
+          >
             <p className="text-base md:text-lg text-zinc-700 leading-relaxed">
               この
               <span className="text-hinoki-gold font-bold">
@@ -166,7 +112,7 @@ export default function HinokiStorySection() {
               </span>
               が多く含まれています。
             </p>
-          </div>
+          </ScrollAnimate>
         </div>
 
         {/* ヒノキチオールの効果 - タイトル */}
@@ -180,12 +126,15 @@ export default function HinokiStorySection() {
         </div>
 
         {/* ベネフィットカード - エレガント版 */}
-        <div
-          ref={benefitsRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 mb-20"
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 mb-20">
           {benefits.map((benefit) => (
-            <div key={benefit.number} className="benefit-card group relative">
+            <ScrollAnimate
+              key={benefit.number}
+              from={{ opacity: 0, y: 60, duration: 1 }}
+              start="top 85%"
+              end="top 50%"
+              className="group relative"
+            >
               {/* カード本体 */}
               <div className="relative p-6 bg-white rounded-xl border border-zinc-200 transition-all duration-500 hover:border-hinoki-gold hover:shadow-lg hover:-translate-y-1 h-full">
                 {/* 番号 */}
@@ -209,7 +158,7 @@ export default function HinokiStorySection() {
                 {/* ホバー時の装飾ライン */}
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-hinoki-gold to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-b-xl" />
               </div>
-            </div>
+            </ScrollAnimate>
           ))}
         </div>
 

@@ -1,91 +1,11 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
+import ScrollAnimate from "@/components/animations/ScrollAnimate";
 
-gsap.registerPlugin(ScrollTrigger);
+const IMAGE_SCROLL = { start: "top 80%", end: "top 30%" } as const;
 
 export default function ProductIntroSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const image1Ref = useRef<HTMLDivElement>(null);
-  const image2Ref = useRef<HTMLDivElement>(null);
-  const image3Ref = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        image1Ref.current,
-        { x: -200, opacity: 0, scale: 0.9 },
-        {
-          x: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1.5,
-          scrollTrigger: {
-            trigger: image1Ref.current,
-            start: "top 80%",
-            end: "top 30%",
-            scrub: 1,
-          },
-        }
-      );
-
-      gsap.fromTo(
-        image2Ref.current,
-        { x: 200, opacity: 0, scale: 0.9 },
-        {
-          x: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 1.5,
-          scrollTrigger: {
-            trigger: image2Ref.current,
-            start: "top 80%",
-            end: "top 30%",
-            scrub: 1,
-          },
-        }
-      );
-
-      gsap.fromTo(
-        image3Ref.current,
-        { y: 100, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1.5,
-          scrollTrigger: {
-            trigger: image3Ref.current,
-            start: "top 80%",
-            end: "top 30%",
-            scrub: 1,
-          },
-        }
-      );
-
-      gsap.from(textRef.current?.querySelectorAll("p, h2") || [], {
-        opacity: 0,
-        y: 40,
-        stagger: 0.2,
-        duration: 1,
-        scrollTrigger: {
-          trigger: textRef.current,
-          start: "top 70%",
-          end: "top 40%",
-          scrub: 1,
-        },
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
       className="relative min-h-screen bg-white py-20 md:py-28 overflow-hidden"
       id="product-intro"
     >
@@ -96,8 +16,10 @@ export default function ProductIntroSection() {
         {/* メインビジュアル: 3枚の写真 */}
         <div className="relative h-[500px] md:h-[600px] mb-20">
           {/* 画像1: 左後方 */}
-          <div
-            ref={image1Ref}
+          <ScrollAnimate
+            from={{ x: -200, opacity: 0, scale: 0.9 }}
+            to={{ x: 0, opacity: 1, scale: 1, duration: 1.5 }}
+            {...IMAGE_SCROLL}
             className="absolute top-0 left-0 md:left-10 w-[55%] md:w-[42%] h-[65%] rounded-2xl overflow-hidden shadow-xl"
           >
             <Image
@@ -107,11 +29,13 @@ export default function ProductIntroSection() {
               className="object-cover"
               sizes="(max-width: 768px) 55vw, 42vw"
             />
-          </div>
+          </ScrollAnimate>
 
           {/* 画像2: 右前方 */}
-          <div
-            ref={image2Ref}
+          <ScrollAnimate
+            from={{ x: 200, opacity: 0, scale: 0.9 }}
+            to={{ x: 0, opacity: 1, scale: 1, duration: 1.5 }}
+            {...IMAGE_SCROLL}
             className="absolute top-16 md:top-24 right-0 md:right-10 w-[65%] md:w-[48%] h-[70%] rounded-2xl overflow-hidden shadow-xl z-10"
           >
             <Image
@@ -121,11 +45,13 @@ export default function ProductIntroSection() {
               className="object-cover"
               sizes="(max-width: 768px) 65vw, 48vw"
             />
-          </div>
+          </ScrollAnimate>
 
           {/* 画像3: 中央下 */}
-          <div
-            ref={image3Ref}
+          <ScrollAnimate
+            from={{ y: 100, opacity: 0 }}
+            to={{ y: 0, opacity: 1, duration: 1.5 }}
+            {...IMAGE_SCROLL}
             className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[45%] md:w-[32%] h-[45%] rounded-xl overflow-hidden shadow-xl z-20"
           >
             <Image
@@ -135,11 +61,17 @@ export default function ProductIntroSection() {
               className="object-cover"
               sizes="(max-width: 768px) 45vw, 32vw"
             />
-          </div>
+          </ScrollAnimate>
         </div>
 
         {/* テキストコンテンツ */}
-        <div ref={textRef} className="max-w-3xl mx-auto text-center space-y-6">
+        <ScrollAnimate
+          targets="p, h2"
+          from={{ opacity: 0, y: 40, stagger: 0.2, duration: 1 }}
+          start="top 70%"
+          end="top 40%"
+          className="max-w-3xl mx-auto text-center space-y-6"
+        >
           <p className="font-en-accent text-[10px] md:text-xs tracking-[0.3em] text-hinoki-brown uppercase">
             Fragrance Paper from Mt. Fuji
           </p>
@@ -159,7 +91,7 @@ export default function ProductIntroSection() {
             <span className="text-hinoki-gold font-bold">ヒノキチオール</span>
             が心を静め、深いリラックスへと導きます。
           </p>
-        </div>
+        </ScrollAnimate>
       </div>
     </section>
   );

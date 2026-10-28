@@ -11,26 +11,15 @@ import BrandStorySection from "@/components/sections/BrandStorySection";
 import CTASection from "@/components/sections/CTASection";
 import Footer from "@/components/sections/Footer";
 import HashScrollHandler from "@/components/utils/HashScrollHandler";
-import { getBlogPosts } from "@/lib/microcms";
+import JsonLd from "@/components/seo/JsonLd";
 import { generateSiteJsonLd } from "@/lib/seo";
-import { toBlogCardPost } from "@/lib/utils";
 
-export const revalidate = 360; // 10分ごとに再検証（トップのブログ更新をすぐ反映）
+export const revalidate = 360; // 6分ごとに再検証（トップのブログ更新をすぐ反映）
 
-export default async function HomePage() {
-  // getBlogPostsの返り値は { posts, totalCount } のオブジェクト
-  const { posts } = await getBlogPosts({ limit: 6 });
-  // BlogSection はクライアントコンポーネントなので本文を渡さない
-  const blogPosts = posts.map(toBlogCardPost);
-
+export default function HomePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(generateSiteJsonLd()),
-        }}
-      />
+      <JsonLd data={generateSiteJsonLd()} />
       <HashScrollHandler />
       <ScrollProgress />
       <Header />
@@ -42,9 +31,9 @@ export default async function HomePage() {
         {/* 2. Product Intro - 9枚の写真で没入体験 */}
         <ProductIntroSection />
 
-        {/* 3. Blog - タイトル・サムネイル明確 */}
+        {/* 3. Blog - タイトル・サムネイル明確（記事の取得を待つ間も他のセクションは先に出す） */}
         <Suspense fallback={<BlogSectionSkeleton />}>
-          <BlogSection posts={blogPosts} />
+          <BlogSection />
         </Suspense>
 
         {/* 4. 3 Products - 各商品3枚ずつ紹介 */}

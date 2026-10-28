@@ -12,7 +12,6 @@
   /* Font Families */
   --font-family-ja-sans: var(--font-noto-sans-jp);
   --font-family-ja-serif: var(--font-noto-serif-jp);
-  --font-family-en-sans: var(--font-inter);
   --font-family-en-display: var(--font-playfair);
   --font-family-en-accent: var(--font-space-grotesk);
 
@@ -191,6 +190,29 @@
 
 .animate-pulse-slow {
   animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* CTA ボタンがゆっくり脈打つ（以前は GSAP。JS を読まずに済むよう CSS にした） */
+@keyframes pulse-scale {
+  to {
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-scale {
+  animation: pulse-scale 1.5s ease-in-out infinite alternate;
+}
+
+/* CTA の粒が浮かんで消える。左右の動きは --particle-x、速さは animation-duration で粒ごとに指定 */
+@keyframes particle-float {
+  to {
+    transform: translate(var(--particle-x, 0), -80px);
+    opacity: 0;
+  }
+}
+
+.animate-particle-float {
+  animation: particle-float 3s ease-in-out infinite;
 }
 
 /* 既存のコードの後に追加 */

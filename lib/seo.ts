@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import type { BlogPost } from "./types";
+import type { BlogPost, Category } from "./types";
+import { SHOP_URL, SITE_NAME, SITE_URL } from "./site";
 import { getBlogPostPath } from "./utils";
 
-const SITE_NAME = "YawnNap";
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/images/og-image.jpg`;
 
 // メインSEOキーワード（クライアント指定）
@@ -187,7 +186,7 @@ export function generateSiteJsonLd() {
       name: SITE_NAME,
       alternateName: "ヨーンナップ",
       url: SITE_URL,
-      sameAs: ["https://www.instagram.com/yawn.nap_", "https://yawnnap.shop"],
+      sameAs: ["https://www.instagram.com/yawn.nap_", SHOP_URL],
     },
     {
       "@context": "https://schema.org",
@@ -199,6 +198,35 @@ export function generateSiteJsonLd() {
       publisher: { "@id": `${SITE_URL}/#organization` },
     },
   ];
+}
+
+/**
+ * パンくずの構造化データ（BreadcrumbList）
+ * @param items 先頭から順に。path はサイト内のパス（トップは ""）
+ */
+export function generateBreadcrumbJsonLd(
+  items: { name: string; path: string }[],
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: `${SITE_URL}${item.path}`,
+    })),
+  };
+}
+
+/** カテゴリページの説明文（microCMS のカテゴリに説明フィールドが無いための暫定） */
+export function getCategoryDescription(category: Category): string {
+  const name = category.name;
+  return (
+    `${name}に関する記事一覧です。富士山麓の富士ヒノキの香りや、ひのきアロマ、フレグランスペーパーYawnNapにまつわる` +
+    `「${name}」の情報をまとめています。リラックス方法、日本土産、森林浴の効果、ウェルネスなど、` +
+    `日々の深呼吸に役立つコンテンツをお届けします。`
+  );
 }
 
 export function generateBlogListJsonLd(posts: BlogPost[]) {

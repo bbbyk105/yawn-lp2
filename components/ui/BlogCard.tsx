@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import ArrowRightIcon from "./ArrowRightIcon";
 import { formatDate, getBlogPostPath } from "@/lib/utils";
 import type { BlogCardPost } from "@/lib/types";
 
@@ -69,19 +70,7 @@ export default function BlogCard({ post }: BlogCardProps) {
             <div className="pt-3 border-t border-zinc-100">
               <span className="inline-flex items-center gap-2 font-en-accent text-xs tracking-wider text-zinc-500 uppercase transition-all duration-300 group-hover:text-hinoki-gold group-hover:gap-3">
                 続きを読む
-                <svg
-                  className="w-3 h-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
+                <ArrowRightIcon className="w-3 h-3" />
               </span>
             </div>
           </div>

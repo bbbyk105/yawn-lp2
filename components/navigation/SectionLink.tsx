@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentProps, MouseEvent } from "react";
+import { scrollToId } from "@/lib/scroll";
 
 type SectionLinkProps = Omit<ComponentProps<typeof Link>, "href"> & {
   /** トップページ内のセクションID */
@@ -24,12 +25,7 @@ export default function SectionLink({
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     onClick?.(e);
     if (pathname !== "/") return;
-
-    const element = document.getElementById(sectionId);
-    if (!element) return;
-
-    e.preventDefault();
-    element.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (scrollToId(sectionId)) e.preventDefault();
   };
 
   return <Link href={`/#${sectionId}`} onClick={handleClick} {...props} />;

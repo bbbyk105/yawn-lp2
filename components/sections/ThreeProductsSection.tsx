@@ -1,11 +1,5 @@
-"use client";
-
-import { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Image from "next/image";
-
-gsap.registerPlugin(ScrollTrigger);
+import ScrollAnimate from "@/components/animations/ScrollAnimate";
 
 const products = [
   {
@@ -58,55 +52,24 @@ const products = [
   },
 ];
 
+/** 商品画像のアニメーション（imageIndex 番目ほど少し遅れて出る） */
+function productImageAnimation(imageIndex: number) {
+  return {
+    from: {
+      opacity: 0,
+      y: 60,
+      scale: 0.95,
+      duration: 1,
+      delay: imageIndex * 0.1,
+    },
+    start: "top 80%",
+    end: "top 45%",
+  };
+}
+
 export default function ThreeProductsSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const productsRef = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      productsRef.current.forEach((product, index) => {
-        if (!product) return;
-
-        const images = product.querySelectorAll(".product-image");
-        const text = product.querySelector(".product-text");
-        const direction = index % 2 === 0 ? -100 : 100;
-
-        gsap.from(text, {
-          opacity: 0,
-          x: direction,
-          duration: 1.2,
-          scrollTrigger: {
-            trigger: product,
-            start: "top 75%",
-            end: "top 40%",
-            scrub: 1,
-          },
-        });
-
-        images.forEach((img, imgIndex) => {
-          gsap.from(img, {
-            opacity: 0,
-            y: 60,
-            scale: 0.95,
-            duration: 1,
-            delay: imgIndex * 0.1,
-            scrollTrigger: {
-              trigger: img,
-              start: "top 80%",
-              end: "top 45%",
-              scrub: 1,
-            },
-          });
-        });
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
     <section
-      ref={sectionRef}
       className="relative bg-white py-20 md:py-28 overflow-hidden"
       id="products"
     >
@@ -134,18 +97,22 @@ export default function ThreeProductsSection() {
           {products.map((product, index) => (
             <div
               key={product.id}
-              ref={(el) => {
-                productsRef.current[index] = el;
-              }}
+              data-product
               className={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${
                 index % 2 === 1 ? "lg:flex-row-reverse" : ""
               }`}
             >
-              {/* テキストコンテンツ */}
-              <div
-                className={`product-text space-y-6 ${
-                  index % 2 === 1 ? "lg:order-2" : ""
-                }`}
+              {/* テキストコンテンツ（商品ごとに左右交互から入る） */}
+              <ScrollAnimate
+                from={{
+                  opacity: 0,
+                  x: index % 2 === 0 ? -100 : 100,
+                  duration: 1.2,
+                }}
+                trigger="[data-product]"
+                start="top 75%"
+                end="top 40%"
+                className={`space-y-6 ${index % 2 === 1 ? "lg:order-2" : ""}`}
               >
                 {/* 商品番号 */}
                 <div className="flex items-center gap-4">
@@ -176,7 +143,7 @@ export default function ThreeProductsSection() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </ScrollAnimate>
 
               {/* 画像グリッド（3枚） */}
               <div
@@ -184,8 +151,9 @@ export default function ThreeProductsSection() {
               >
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
                   {/* 画像1: 大きく（2列分） */}
-                  <div
-                    className="product-image col-span-2 relative w-full"
+                  <ScrollAnimate
+                    {...productImageAnimation(0)}
+                    className="col-span-2 relative w-full"
                     style={{ aspectRatio: "16/10" }}
                   >
                     <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg">
@@ -197,11 +165,12 @@ export default function ThreeProductsSection() {
                         sizes="(max-width: 1024px) 100vw, 50vw"
                       />
                     </div>
-                  </div>
+                  </ScrollAnimate>
 
                   {/* 画像2: 左下 */}
-                  <div
-                    className="product-image relative w-full"
+                  <ScrollAnimate
+                    {...productImageAnimation(1)}
+                    className="relative w-full"
                     style={{ aspectRatio: "1/1" }}
                   >
                     <div className="relative w-full h-full rounded-xl overflow-hidden shadow-md">
@@ -213,11 +182,12 @@ export default function ThreeProductsSection() {
                         sizes="(max-width: 1024px) 50vw, 25vw"
                       />
                     </div>
-                  </div>
+                  </ScrollAnimate>
 
                   {/* 画像3: 右下 */}
-                  <div
-                    className="product-image relative w-full"
+                  <ScrollAnimate
+                    {...productImageAnimation(2)}
+                    className="relative w-full"
                     style={{ aspectRatio: "1/1" }}
                   >
                     <div className="relative w-full h-full rounded-xl overflow-hidden shadow-md">
@@ -229,7 +199,7 @@ export default function ThreeProductsSection() {
                         sizes="(max-width: 1024px) 50vw, 25vw"
                       />
                     </div>
-                  </div>
+                  </ScrollAnimate>
                 </div>
               </div>
             </div>

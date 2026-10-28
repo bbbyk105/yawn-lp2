@@ -1,5 +1,6 @@
-import Link from "next/link";
 import BlogCard from "../ui/BlogCard";
+import CategoryNav from "./CategoryNav";
+import Pagination from "./Pagination";
 import type { BlogCardPost, Category } from "@/lib/types";
 import { BLOG_PER_PAGE } from "@/lib/constants";
 
@@ -22,8 +23,6 @@ export default function BlogList({
 }: BlogListProps) {
   const totalPages = Math.ceil(totalCount / BLOG_PER_PAGE);
   const basePath = categorySlug ? `/blog/category/${categorySlug}` : "/blog";
-  // slug 未設定のカテゴリはページが存在しないので導線に出さない
-  const linkableCategories = categories.filter((c) => c.slug);
 
   return (
     <div className="min-h-screen pt-32 pb-20 md:pt-40 md:pb-28">
@@ -43,22 +42,10 @@ export default function BlogList({
         </div>
 
         {/* カテゴリ導線（URLを持つ） */}
-        {linkableCategories.length > 0 && (
-          <nav
-            className="mb-12 flex flex-wrap justify-center gap-3"
-            aria-label="カテゴリ"
-          >
-            {linkableCategories.map((c) => (
-              <Link
-                key={c.id}
-                href={`/blog/category/${c.slug}`}
-                className="px-4 py-2 rounded-full text-sm bg-zinc-100 text-zinc-600 hover:bg-zinc-200 transition-colors"
-              >
-                {c.name}
-              </Link>
-            ))}
-          </nav>
-        )}
+        <CategoryNav
+          categories={categories}
+          className="mb-12 flex flex-wrap justify-center gap-3"
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {initialPosts.map((post) => (
@@ -72,37 +59,11 @@ export default function BlogList({
             {Math.min(currentPage * BLOG_PER_PAGE, totalCount)} 件を表示
           </p>
 
-          {/* ページネーション */}
-          {totalPages > 1 && (
-            <nav
-              className="flex items-center gap-2"
-              aria-label="ページネーション"
-            >
-              {currentPage > 1 && (
-                <Link
-                  href={
-                    currentPage === 2
-                      ? basePath
-                      : `${basePath}/page/${currentPage - 1}`
-                  }
-                  className="px-4 py-2 rounded-lg text-sm font-medium bg-zinc-100 text-zinc-700 hover:bg-zinc-200 transition-colors"
-                >
-                  前へ
-                </Link>
-              )}
-              <span className="px-3 text-sm text-zinc-600">
-                {currentPage} / {totalPages}
-              </span>
-              {currentPage < totalPages && (
-                <Link
-                  href={`${basePath}/page/${currentPage + 1}`}
-                  className="px-4 py-2 rounded-lg text-sm font-medium bg-zinc-100 text-zinc-700 hover:bg-zinc-200 transition-colors"
-                >
-                  次へ
-                </Link>
-              )}
-            </nav>
-          )}
+          <Pagination
+            basePath={basePath}
+            currentPage={currentPage}
+            totalPages={totalPages}
+          />
         </div>
       </div>
     </div>

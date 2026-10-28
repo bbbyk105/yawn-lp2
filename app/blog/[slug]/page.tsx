@@ -6,8 +6,8 @@ import {
   resolveBlogPost,
 } from "@/lib/microcms";
 import { generateBlogMetadata, generateBlogJsonLd } from "@/lib/seo";
-import { toBlogCardPost } from "@/lib/utils";
 import BlogArticle from "@/components/blog/BlogArticle";
+import JsonLd from "@/components/seo/JsonLd";
 
 export const revalidate = 60; // ISR: 60秒ごとに再検証
 
@@ -53,22 +53,10 @@ export default async function BlogPostPage({ params }: Props) {
   // 関連記事取得（同カテゴリ最大6件）
   const relatedPosts = await getRelatedPosts(post.id, post.category?.id, 6);
 
-  // JSON-LD構造化データ
-  const jsonLd = generateBlogJsonLd(post, path);
-
   return (
     <>
-      {/* JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-
-      <BlogArticle
-        post={post}
-        path={path}
-        relatedPosts={relatedPosts.map(toBlogCardPost)}
-      />
+      <JsonLd data={generateBlogJsonLd(post, path)} />
+      <BlogArticle post={post} path={path} relatedPosts={relatedPosts} />
     </>
   );
 }

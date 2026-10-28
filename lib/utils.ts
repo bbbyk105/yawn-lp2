@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { BlogCardPost, BlogPost } from "./types";
+import type { BlogPost } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -12,10 +12,19 @@ export function getBlogPostPath(post: Pick<BlogPost, "id" | "slug">): string {
   return post.slug || post.id;
 }
 
-/** クライアントコンポーネントへ渡す前に本文などを落とす（RSCペイロード削減） */
-export function toBlogCardPost(post: BlogPost): BlogCardPost {
-  const { id, slug, title, excerpt, thumbnail, category, publishedAt } = post;
-  return { id, slug, title, excerpt, thumbnail, category, publishedAt };
+/**
+ * URL の /page/[num] の数字。2 以上でなければ null（1ページ目は /page/1 ではなく一覧のパスで出す）。
+ * 2abc・02 なども null にする（同じページが別のURLで出たり、ISR のキャッシュがURLの数だけ増えたりしないように）
+ */
+export function parsePageNumber(value: string): number | null {
+  if (!/^[1-9]\d*$/.test(value)) return null;
+  const page = Number(value);
+  return page < 2 ? null : page;
+}
+
+/** 記事一覧の page ページ目のパス（1ページ目は basePath そのもの。/page/1 は作らない） */
+export function getListPagePath(basePath: string, page: number): string {
+  return page <= 1 ? basePath : `${basePath}/page/${page}`;
 }
 
 // 日付フォーマット

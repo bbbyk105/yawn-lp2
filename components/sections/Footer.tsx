@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SectionLink from "@/components/navigation/SectionLink";
+import { SHOP_URL } from "@/lib/site";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -53,7 +54,7 @@ export default function Footer() {
             <ul className="space-y-3 text-xs md:text-sm text-zinc-600">
               <li>
                 <a
-                  href="https://yawnnap.shop"
+                  href={SHOP_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:text-hinoki-gold transition-colors duration-300 inline-flex items-center gap-2 group"

@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import {
   Noto_Sans_JP,
   Noto_Serif_JP,
-  Inter,
   Playfair_Display,
   Space_Grotesk,
 } from "next/font/google";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const notoSansJP = Noto_Sans_JP({
@@ -19,12 +19,6 @@ const notoSerifJP = Noto_Serif_JP({
   weight: ["400", "600", "700"],
   subsets: ["latin"],
   variable: "--font-noto-serif-jp",
-  display: "swap",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
   display: "swap",
 });
 
@@ -55,8 +49,6 @@ const MAIN_SEO_KEYWORDS = [
   "静岡 ひのき フレグランス",
   "YawnNap",
 ];
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://example.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -104,22 +96,12 @@ export default function RootLayout({
   return (
     <html
       lang="ja"
-      className={`
-        ${notoSansJP.variable} 
-        ${notoSerifJP.variable} 
-        ${inter.variable} 
-        ${playfair.variable} 
-        ${spaceGrotesk.variable}
-      `}
-      style={
-        {
-          "--font-noto-sans-jp": notoSansJP.style.fontFamily,
-          "--font-noto-serif-jp": notoSerifJP.style.fontFamily,
-          "--font-inter": inter.style.fontFamily,
-          "--font-playfair": playfair.style.fontFamily,
-          "--font-space-grotesk": spaceGrotesk.style.fontFamily,
-        } as React.CSSProperties
-      }
+      className={[
+        notoSansJP.variable,
+        notoSerifJP.variable,
+        playfair.variable,
+        spaceGrotesk.variable,
+      ].join(" ")}
     >
       <body className="antialiased bg-black text-white overflow-x-hidden">
         {children}

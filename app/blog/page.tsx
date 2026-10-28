@@ -2,7 +2,9 @@ import { Metadata } from "next";
 import { getBlogPosts, getCategories } from "@/lib/microcms";
 import { generateBlogListJsonLd } from "@/lib/seo";
 import BlogList from "@/components/blog/BlogList";
+import JsonLd from "@/components/seo/JsonLd";
 import { BLOG_PER_PAGE } from "@/lib/constants";
+import { SITE_URL } from "@/lib/site";
 
 const BLOG_KEYWORDS = [
   "富士山",
@@ -41,7 +43,7 @@ export const metadata: Metadata = {
     title: "ブログ | 富士山・ひのき・アロマ・リラックス情報 | YawnNap",
     description:
       "富士山麓の自然、ヒノキの魅力、森林浴の効果について綴ります。富士山観光、ひのきの香り、アロマ効果、リラックス方法、日本土産情報をお届けします。",
-    url: `${process.env.NEXT_PUBLIC_SITE_URL}/blog`,
+    url: `${SITE_URL}/blog`,
     type: "website",
     siteName: "YawnNap",
   },
@@ -62,27 +64,21 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/blog`,
+    canonical: `${SITE_URL}/blog`,
   },
 };
 
 export const revalidate = 60; // ISR: 60秒ごとに再検証
 
 export default async function BlogPage() {
-  const { posts, totalCount } = await getBlogPosts({
-    limit: BLOG_PER_PAGE,
-    offset: 0,
-  });
-  const categories = await getCategories();
-
-  const jsonLd = generateBlogListJsonLd(posts);
+  const [{ posts, totalCount }, categories] = await Promise.all([
+    getBlogPosts({ limit: BLOG_PER_PAGE, offset: 0 }),
+    getCategories(),
+  ]);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={generateBlogListJsonLd(posts)} />
       {/* <main> は app/blog/layout.tsx 側で出力している */}
       <div className="min-h-screen bg-white">
         <BlogList
